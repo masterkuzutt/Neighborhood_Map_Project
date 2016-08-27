@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Neighborhood Map</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="main-container">
+    <div class="filer-conteiner">
+      <form  id="form-container" class="form-container">
+        <label for="city">City: </label><input type="text" id="city" value="">
+        <button  type="submit" id="submit-btn">Submit</button>
+        </form>
+        <div class="filter-div">
+          <label for="filer-textbox">filter:</label>
+          <input type="text" name="filer-textbox" class="filter-textbox">
+          <input type="button" class="show-allbtn " value="Show All Marker">
+          <input type="button" class="hide-allbtn "value="Hide All Marker">
+        </div>
+    </div>
+    <div class="map-container">
+      <div id="map">
+      </div>
+    </div>
+   </div>
+
+  <script src="js/libs/jquery.min.js"></script>
+  <script src="js/libs/knockout-3.2.0.js"></script>
+
+  <script src="js/script.js"></script>
+  <script asybc defer
+  src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=viewmodel.initMap"></script>
+  <!-- <script asybc defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=initMap"></script> -->
+</body>
+</html>
