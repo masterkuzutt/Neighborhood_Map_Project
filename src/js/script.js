@@ -1,26 +1,3 @@
-var Common = {
-  getJSON : function (urlStr,callback,callback_err) {
-    $.getJSON(urlStr,callback)
-    .error(callback_err);
-  },
-
-  sendAjax : function (urlStr,callback) {
-    var requestTimeout = setTimeout(function  () {
-    },8000);
-
-    $.ajax({
-      method : "GET",
-      url : urlStr,
-      dataType : api.dataType
-    })
-    .done(function  (data){
-      callback(data);
-      clearTimeout(requestTimeout);
-    });
-  }
-};
-
-
 // Model
 var Location = function (initialData) {
   this.title = ko.observable(initialData.title);
@@ -31,11 +8,75 @@ var Location = function (initialData) {
   };
 };
 
-var ArticleModel = function (initialData) {
+
+var googleMap = function  (mapElement,centerLocation,mapStyle,locationData) {
+  var mapApi =  google.maps; // google.maps;
+
+  this.map  =  new mapApi.Map(mapElement, {
+    // center: centerLocation, //{lat: 40.74135, lng: -73.99802}
+    center: {lat: 40.74135, lng: -73.99802},
+    zoom : 8,
+    styles : mapStyle,
+    mapTypeControl :false
+  });
+
+  // init infoWindow
+  this.infoWindow = new mapApi.InfoWindow();
+  // init bounds
+  this.bounds = new mapApi.LatLngBounds();
+  // init street view
+  this.streetViewService = new mapApi.StreetViewService();
+
+      drawingManager = "",
+      polygon = ""
+
+  this.locationData = locationData || [];
+
+  this.markers = [];
+  this.drawingManager = new mapApi.drawing.DrawingManager({
+    drawingMode: mapApi.drawing.OverlayType.MARKER,
+    drawingControl: true,
+    drawingControlOptions: {
+      position: mapApi.ControlPosition.TOP_CENTER,
+      drawingModes: [
+          mapApi.drawing.OverlayType.POLYGON,
+          // google.maps.drawing.OverlayType.MARKER,
+          // google.maps.drawing.OverlayType.CIRCLE,
+          // google.maps.drawing.OverlayType.POLYLINE,
+          // google.maps.drawing.OverlayType.RECTANGLE
+        ]
+    },
+    // markerOptions: {icon: 'images/beachflag.png'},
+    circleOptions: {
+      fillColor: '#ffff00',
+      fillOpacity: 1,
+      strokeWeight: 5,
+      clickable: false,
+      editable: true,
+      zIndex: 1
+    },
+    map : this.map
+  });
+
+  this.addLocationData = function  (title,lat,lng) {
+    this.locationData.push({title:title, position : { lat:lat, lng : lng }});
+  };
+
+  this.createMarkers = function () {
+    for ( var i = 0 ,len = this.locationData.length; i < len ; i++){
+      var marker = new mapApi.Marker({
+            title : this.locationData[i].title,
+            position : this.locationData[i].position,
+            map : this.map ,
+            animation : mapApi.Animation.DROP,
+            id : i
+      });
+      this.markers.push(marker);
+    }
+  };
 
 };
 
-//
 
 var initLocationData  = [
   { title :  'Initial Location' ,position :  {lat: 40.74135, lng: -73.99802} },
@@ -43,10 +84,6 @@ var initLocationData  = [
   { title :  'third   Location' ,position :  {lat: 40.74155, lng: -73.99822} },
   { title :  'forth   Location' ,position :  {lat: 40.74165, lng: -73.99832} }
 ];
-var LocationData  = [];
-for (var i = 0 , len = initLocationData.length ; i < len ; i++ ){
-  LocationData.push(ko.observable(new Location(initLocationData[i])));
-}
 
 //
 var styles = [
@@ -117,76 +154,40 @@ var styles = [
         ];
 
 // ViewModel
+
 function ViewModel () {
   var self = this;
-  this.map  =  "";
-  this.bounds = ""
-  this.mapDiv =  $('#map')[0];
-  this.infoWindow =  "";
-  this.streetViewService = "";
-  this.markers = [];
-  this.elemStreetText = $('#street');
-  this.elemCityText =  $('#city');
-
+  /*
+   *  initMap()
+   *  It is called from google api callback parameter
+   */
   this.initMap  =  function () {
-    // init map
+    // init googleMap model
+    var Map = new googleMap($('#map')[0],styles,{lat: 40.74135, lng: -73.99802},initLocationData);
 
-    this.map = new google.maps.Map(this.mapDiv, {
-      center:LocationData[0]().position(),
-      zoom : 8,
-      styles : styles,
-      mapTypeControl :false
-    });
+    Map.createMarkers();
+
+    // marker.addListener('click',function () {
+    //     self.populateInfoWindow(this,self.infoWindow);
+    //
+    // });
+    //
+    // $('.show-allbtn').click(this,this.showListings);
+    // $('.hide-allbtn').click(this,this.hideListings);
 
 
-    // init infoWindow
-    this.infoWindow = new google.maps.InfoWindow();
-    // init bounds
-    this.bounds = new google.maps.LatLngBounds();
+  }
 
-    // init street view
-    this.streetViewService = new google.maps.StreetViewService();
-    // init markers for initial data;
-
-    for ( var i = 0 , len = LocationData.length ; i < len ;i++){
-      var marker = this.createMarker(LocationData[i],i)
-      this.markers.push(marker);
-    }
-
-    $('.show-allbtn').click(this,this.showListings);
-    $('.hide-allbtn').click(this,this.hideListings);
-
-  };
-
-  this.createMarker = function (location,id) {
-    var marker = new google.maps.Marker({
-          title : location().title(),
-          position : location().position(),
-          map : this.map ,
-          animation : google.maps.Animation.DROP,
-          id : id
-    });
-
-    // marker.setMap(this.map);
-    marker.addListener('click',function () {
-        self.populateInfoWindow(this,self.infoWindow);
-
-    });
-
-    return marker;
-  };
 
   this.populateInfoWindow = function (marker,infowindow) {
     if ( infowindow.marker !== marker ){
       infowindow.marker = marker;
 
-      // infowindow.setContent ( '<div>' + marker.title + '</div>');
-
       function getStreetView   (data,status) {
-        if (status == google.maps.StreetViewStatus.OK){
+        if (status == googleMap.StreetViewStatus.OK){
 
           var nearStreetViewLocation = data.location.latLng;
-          var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
+          var heading = googleMap.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
           infowindow.setContent('<div>test ' + marker.title + '</div><div id="pano"></div>');
           var panoramaOptions = {
             position: nearStreetViewLocation,
@@ -195,9 +196,9 @@ function ViewModel () {
               pitch: 30
             }
           };
-          var panorama = new google.maps.StreetViewPanorama(
+          var panorama = new googleMap.StreetViewPanorama(
             document.getElementById('pano'), panoramaOptions);
-          console.log(panorama);
+
         } else {
           infowindow.setContent('<div>' + marker.title + '</div>' +
             '<div>No Street View Found</div>');
@@ -206,7 +207,7 @@ function ViewModel () {
 
       this.streetViewService.getPanoramaByLocation(marker.position, 50, getStreetView);
 
-      infowindow.open(this.map,marker);
+      infowindow.open(map,marker);
       // console.log(infowindow);
       infowindow.addListener('closeclick',function () {
           infowindow.marker = null ;
@@ -214,25 +215,64 @@ function ViewModel () {
     }
   };
 
+  /*
+   *
+   *
+  */
+
   this.showListings = function () {
-    for (var i = 0; i < self.markers.length; i++) {
-      self.markers[i].setMap(self.map);
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
       // console.log(self.markers[i]);
-      self.bounds.extend(self.markers[i].position);
+      bounds.extend(markers[i].position);
     }
-    self.map.fitBounds(self.bounds);
+    map.fitBounds(bounds);
   };
 
+  /*
+   *
+   *
+  */
+
   this.hideListings = function () {
-    for (var i = 0; i < self.markers.length; i++) {
-      self.markers[i].setMap(null);
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
     }
     // self.map.fitBounds(self.bounds);
   };
 
+  /*
+   *
+   *
+   */
+  this.searchWithInPolygon = function  () {
+    for ( var i = 0, len = markers.length ; i < len ; i++){
+      if(googleMap.geometry.poly.containsLocation(markers[i].position,polygon)){
+        markers[i].setMap(map);
+      }else {
+        markers[i].setMap(null);
+      }
+    }
+  };
 
+  /*
+  */
+  // this.drawingManager.addListener('overlaycomplete',function  (e) {
+  //   if(polygon){
+  //     polygon.setMap(null);
+  //     self.hideListings();
+  //   }
+  //   self.drawingManager.setDrawingMode ( null ) ;
+  //
+  //   polygon =  e.overlay;
+  //   polygon.setEditable(true);
+  //   self.searchWithInPolygon();
+  //
+  //
+  //   polygon.getPath().addListener('set_at',self.searchWithInPolygon);
+  //   polygon.getPath().addListener('insert_at',self.searchWithInPolygon);
+  // });
 };
-
 
 var viewmodel = new ViewModel();
 // var viewmodel = new ViewModel();
