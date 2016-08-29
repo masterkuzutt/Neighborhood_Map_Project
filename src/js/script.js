@@ -1,3 +1,5 @@
+
+
 // Model
 var Location = function (initialData) {
   this.title = ko.observable(initialData.title);
@@ -8,13 +10,14 @@ var Location = function (initialData) {
   };
 };
 
-
+//centerLocation {lat: 40.74135, lng: -73.99802}
 var googleMap = function  (mapElement,centerLocation,mapStyle,locationData) {
-  var mapApi =  google.maps; // google.maps;
 
+  var mapApi =  google.maps,
+      self = this;
+  // init map
   this.map  =  new mapApi.Map(mapElement, {
-    // center: centerLocation, //{lat: 40.74135, lng: -73.99802}
-    center: {lat: 40.74135, lng: -73.99802},
+    center: centerLocation,
     zoom : 8,
     styles : mapStyle,
     mapTypeControl :false
@@ -24,44 +27,26 @@ var googleMap = function  (mapElement,centerLocation,mapStyle,locationData) {
   this.infoWindow = new mapApi.InfoWindow();
   // init bounds
   this.bounds = new mapApi.LatLngBounds();
-  // init street view
-  this.streetViewService = new mapApi.StreetViewService();
 
-      drawingManager = "",
-      polygon = ""
-
+  // init locacion data
   this.locationData = locationData || [];
 
+  // init markers array
   this.markers = [];
-  this.drawingManager = new mapApi.drawing.DrawingManager({
-    drawingMode: mapApi.drawing.OverlayType.MARKER,
-    drawingControl: true,
-    drawingControlOptions: {
-      position: mapApi.ControlPosition.TOP_CENTER,
-      drawingModes: [
-          mapApi.drawing.OverlayType.POLYGON,
-          // google.maps.drawing.OverlayType.MARKER,
-          // google.maps.drawing.OverlayType.CIRCLE,
-          // google.maps.drawing.OverlayType.POLYLINE,
-          // google.maps.drawing.OverlayType.RECTANGLE
-        ]
-    },
-    // markerOptions: {icon: 'images/beachflag.png'},
-    circleOptions: {
-      fillColor: '#ffff00',
-      fillOpacity: 1,
-      strokeWeight: 5,
-      clickable: false,
-      editable: true,
-      zIndex: 1
-    },
-    map : this.map
-  });
 
+  /*
+   *
+   *
+   */
   this.addLocationData = function  (title,lat,lng) {
     this.locationData.push({title:title, position : { lat:lat, lng : lng }});
   };
 
+
+  /*
+   *
+   *
+   */
   this.createMarkers = function () {
     for ( var i = 0 ,len = this.locationData.length; i < len ; i++){
       var marker = new mapApi.Marker({
@@ -72,6 +57,28 @@ var googleMap = function  (mapElement,centerLocation,mapStyle,locationData) {
             id : i
       });
       this.markers.push(marker);
+    }
+  };
+
+  /*
+   *
+   *
+   */
+  this.setAllMarkerMap = function () {
+    for ( var i = 0 , len = self.markers.length ; i < len ; i++) {
+      self.markers[i].setMap(self.map);
+      self.bounds.extend(self.markers[i].position);
+    }
+    self.map.fitBounds(self.bounds);
+  };
+
+  /*
+   *
+   *
+   */
+  this.setAllMarkerNull = function (){
+    for ( var i = 0 , len = self.markers.length ; i < len ; i++) {
+      self.markers[i].setMap(null);
     }
   };
 
@@ -156,123 +163,74 @@ var styles = [
 // ViewModel
 
 function ViewModel () {
+
   var self = this;
   /*
    *  initMap()
    *  It is called from google api callback parameter
    */
+
   this.initMap  =  function () {
+    var mapApi =  google.maps // google.maps;
+
+
     // init googleMap model
-    var Map = new googleMap($('#map')[0],styles,{lat: 40.74135, lng: -73.99802},initLocationData);
+    var Map = new googleMap($('#map')[0],{lat: 40.74135, lng: -73.99802},styles,initLocationData);
 
     Map.createMarkers();
 
-    // marker.addListener('click',function () {
-    //     self.populateInfoWindow(this,self.infoWindow);
-    //
-    // });
-    //
-    // $('.show-allbtn').click(this,this.showListings);
-    // $('.hide-allbtn').click(this,this.hideListings);
+    for (var i = 0 ,len = Map.markers.length ; i <  len ; i++){
+      var marker = Map.markers[i];
+      marker.addListener('click',function () {
+        self.setStreetVeiwToInfoWindow(Map.map,Map.infoWindow,marker,'pano');
+      });
+    }
 
+    $('.show-allbtn').click(Map,Map.setAllMarkerMap);
+    $('.hide-allbtn').click(Map,Map.setAllMarkerNull);
 
-  }
+  };
 
+  /*
+   *
+  */
+  this.setStreetVeiwToInfoWindow = function (map,infowindow,marker,attachId) {
+    var mapApi =  google.maps // google.maps;
 
-  this.populateInfoWindow = function (marker,infowindow) {
     if ( infowindow.marker !== marker ){
       infowindow.marker = marker;
 
-      function getStreetView   (data,status) {
-        if (status == googleMap.StreetViewStatus.OK){
+      var streetViewService = new google.maps.StreetViewService();
 
-          var nearStreetViewLocation = data.location.latLng;
-          var heading = googleMap.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
-          infowindow.setContent('<div>test ' + marker.title + '</div><div id="pano"></div>');
-          var panoramaOptions = {
-            position: nearStreetViewLocation,
-            pov: {
-              heading: heading,
-              pitch: 30
-            }
-          };
-          var panorama = new googleMap.StreetViewPanorama(
-            document.getElementById('pano'), panoramaOptions);
+      streetViewService.getPanoramaByLocation(marker.position, 50,function (data,status) {
+        if (status == mapApi.StreetViewStatus.OK){
 
+          var location = data.location.latLng,
+              panoramaOptions = {
+                position: location,
+                pov: {
+                  heading: mapApi.geometry.spherical.computeHeading(location, marker.position),
+                  pitch: 30
+                }
+              },
+              panorama = "";
+
+          infowindow.setContent('<div>test ' + marker.title + '</div><div id="' + attachId + '"></div>');
+
+          var panorama = new mapApi.StreetViewPanorama( document.getElementById(attachId), panoramaOptions);
         } else {
           infowindow.setContent('<div>' + marker.title + '</div>' +
             '<div>No Street View Found</div>');
         }
-      }
-
-      this.streetViewService.getPanoramaByLocation(marker.position, 50, getStreetView);
+      });
 
       infowindow.open(map,marker);
-      // console.log(infowindow);
       infowindow.addListener('closeclick',function () {
           infowindow.marker = null ;
       });
     }
   };
 
-  /*
-   *
-   *
-  */
-
-  this.showListings = function () {
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-      // console.log(self.markers[i]);
-      bounds.extend(markers[i].position);
-    }
-    map.fitBounds(bounds);
-  };
-
-  /*
-   *
-   *
-  */
-
-  this.hideListings = function () {
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(null);
-    }
-    // self.map.fitBounds(self.bounds);
-  };
-
-  /*
-   *
-   *
-   */
-  this.searchWithInPolygon = function  () {
-    for ( var i = 0, len = markers.length ; i < len ; i++){
-      if(googleMap.geometry.poly.containsLocation(markers[i].position,polygon)){
-        markers[i].setMap(map);
-      }else {
-        markers[i].setMap(null);
-      }
-    }
-  };
-
-  /*
-  */
-  // this.drawingManager.addListener('overlaycomplete',function  (e) {
-  //   if(polygon){
-  //     polygon.setMap(null);
-  //     self.hideListings();
-  //   }
-  //   self.drawingManager.setDrawingMode ( null ) ;
-  //
-  //   polygon =  e.overlay;
-  //   polygon.setEditable(true);
-  //   self.searchWithInPolygon();
-  //
-  //
-  //   polygon.getPath().addListener('set_at',self.searchWithInPolygon);
-  //   polygon.getPath().addListener('insert_at',self.searchWithInPolygon);
-  // });
 };
 
 var viewmodel = new ViewModel();
-// var viewmodel = new ViewModel();
