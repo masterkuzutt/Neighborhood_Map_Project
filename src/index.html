@@ -7,6 +7,13 @@
 </head>
 <body>
   <div class="main-container">
+
+    <div>
+      <ul data-bind="foreach : locationData">
+        <li><p data-bind="text : title"></p></li>
+      </ul>
+    </div>
+
     <div class="filer-conteiner">
       <form  id="form-container" class="form-container">
         <label for="city">City: </label><input type="text" id="city" value="">
@@ -19,16 +26,12 @@
           <input type="button" class="hide-allbtn "value="Hide All Marker">
         </div>
     </div>
-    <div class="location-list-container">
-      <ul id="locationlist">
-        <li id="locationlist-item"></li>
-      </ul>
-    </div>
+
     <div class="map-container">
       <div id="map">
       </div>
     </div>
-   </div>
+  </div>
 
   <script src="js/libs/jquery.min.js"></script>
   <script src="js/libs/knockout-3.2.0.js"></script>

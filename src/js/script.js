@@ -8,10 +8,16 @@ var Location = function (initialData) {
   this.position = function () {
     return {lat : this.lat(),lng :this.lng()};
   };
+  this.marker = new google.maps.Marker({
+            title : this.title(),
+            position : this.position(),
+            map : null ,
+            animation : google.maps.Animation.DROP,
+      });
 };
 
 //centerLocation {lat: 40.74135, lng: -73.99802}
-var googleMap = function  (mapElement,centerLocation,mapStyle,locationData) {
+var googleMap = function  (mapElement,centerLocation,mapStyle) {
 
   var mapApi =  google.maps,
       self = this;
@@ -28,30 +34,30 @@ var googleMap = function  (mapElement,centerLocation,mapStyle,locationData) {
   // init bounds
   this.bounds = new mapApi.LatLngBounds();
 
-  // init locacion data
-  this.locationData = locationData || [];
-
   // init markers array
   this.markers = [];
+
+  // init locacion data
+  this.locationData = ko.observableArray([]);
 
   /*
    *
    *
    */
-  this.addLocationData = function  (title,lat,lng) {
-    this.locationData.push({title:title, position : { lat:lat, lng : lng }});
+  this.addLocationData = function  (location) {
+    this.locationData.push(ko.observable(new Location(location)));
   };
-
 
   /*
    *
    *
    */
   this.createMarkers = function () {
-    for ( var i = 0 ,len = this.locationData.length; i < len ; i++){
+    for ( var i = 0 ,len = this.locationData().length; i < len ; i++){
+
       var marker = new mapApi.Marker({
-            title : this.locationData[i].title,
-            position : this.locationData[i].position,
+            title : this.locationData()[i]().title(),
+            position : this.locationData()[i]().position(),
             map : this.map ,
             animation : mapApi.Animation.DROP,
             id : i
@@ -91,6 +97,8 @@ var initLocationData  = [
   { title :  'third   Location' ,position :  {lat: 40.74155, lng: -73.99822} },
   { title :  'forth   Location' ,position :  {lat: 40.74165, lng: -73.99832} }
 ];
+
+
 
 //
 var styles = [
@@ -163,19 +171,22 @@ var styles = [
 // ViewModel
 
 function ViewModel () {
-
   var self = this;
   /*
    *  initMap()
    *  It is called from google api callback parameter
    */
-
   this.initMap  =  function () {
     var mapApi =  google.maps // google.maps;
 
-
     // init googleMap model
-    var Map = new googleMap($('#map')[0],{lat: 40.74135, lng: -73.99802},styles,initLocationData);
+    var Map = new googleMap($('#map')[0],initLocationData[0].position,styles);
+    ko.applyBindings(Map);
+    // add location data to map
+    for ( var i = 0, len = initLocationData.length; i < len ; i++){
+      // console.log(initLocationData[i]);
+      Map.addLocationData(initLocationData[i]);
+    }
 
     Map.createMarkers();
 
@@ -234,3 +245,4 @@ function ViewModel () {
 };
 
 var viewmodel = new ViewModel();
+// ko.applyBindings(viewmodel);
