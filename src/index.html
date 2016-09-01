@@ -2,43 +2,54 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>Neighborhood Map</title>
+  <script src="https://use.fontawesome.com/d48299b3b3.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="main-container">
+  <div class="header-container">
+    <h1 class="site-title">Neighborhood Map</h1>
+    <div class="filter-container ">
+      <input type="text" name="filer-textbox" id="filter-textbox">
+      <input type="button" class="apply-filter btn" value="&#xf0b0;">
+      <!-- <i class="fa fa-filter" aria-hidden="true" class="apply-filter btn"></i> -->
+      <input type="button" class="clear-fileter btn" value="&#xf0e2;">
+      <!-- <i class="fa fa-times" aria-hidden="true"class="clear-fileter btn"></i> -->
 
-    <div>
+    </div>
+  </div>
+  <div class="main-container">
+    <div class="list-container">
       <ul data-bind="foreach : locationData">
-        <li><p data-bind="text : title"></p></li>
+        <li class="list-item" data-bind="visible: visibility">
+           <figure class="location-figure">
+            <picture>
+              <img data-bind="attr: {src:imgUrl}" src="" alt="location img">
+            </picture>
+          </figure>
+          <div class="location-discription">
+            <h3 data-bind="text : title"></h3>
+            <p data-bind="text : discription"></p>
+          </div>
+          <input type="button" class="delete-btn btn" value="&#xf00d;">
+        </li>
       </ul>
     </div>
 
-    <div class="filer-conteiner">
-      <form  id="form-container" class="form-container">
-        <label for="city">City: </label><input type="text" id="city" value="">
-        <button  type="submit" id="submit-btn">Submit</button>
-        </form>
-        <div class="filter-div">
-          <label for="filer-textbox">filter:</label>
-          <input type="text" name="filer-textbox" class="filter-textbox">
-          <input type="button" class="show-allbtn " value="Show All Marker">
-          <input type="button" class="hide-allbtn "value="Hide All Marker">
-        </div>
-    </div>
 
     <div class="map-container">
+      <input type="text" name="pac-input" id="pac-input">
       <div id="map">
       </div>
     </div>
   </div>
-
   <script src="js/libs/jquery.min.js"></script>
   <script src="js/libs/knockout-3.2.0.js"></script>
 
   <script src="js/script.js"></script>
   <script asybc defer
-  src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=init"></script>
+  src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry,places&key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=init"></script>
   <!-- <script asybc defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=initMap"></script> -->
 </body>
 </html>
