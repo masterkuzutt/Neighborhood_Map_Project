@@ -2,9 +2,6 @@
 This project is for Front-End developer nanodegree.by using google maps api ,wikipedia web and knockout.js , implement web app that show list of location and icon on the map.
 
 ## How To Use
-### installation
-* access to this link.
-
 ### add location
 * input word related to location you want to add  in textbox on google map.
 * select location from google map api suggestion.

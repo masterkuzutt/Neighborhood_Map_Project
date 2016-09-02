@@ -2,7 +2,6 @@
 * {
   box-sizing:border-box;
   max-width: 100%;
-
   margin:0;
   padding:0;
 }
@@ -48,19 +47,8 @@ li{
   overflow: hidden;
 }
 
-
 li:hover {
   background:#eee;
-}
-/*
-li img{
-  float: left
-  margin: 9 15px;
-}*/
-
-
-li p {
-
 }
 
 input{
@@ -68,11 +56,6 @@ input{
   font-size: 1em;
   font-weight: 300;
 }
-
-/*input:active{
-  border-color:#616161;
-}*/
-
 
 /* main */
 .main-container {
@@ -126,7 +109,6 @@ input{
   margin:0.5em 0;
 }
 
-/*@media screen and (min-width: 500px ) and (orientation: landscape){*/
 @media screen and (orientation: landscape){
   .filter-container {
     width: 50%;
@@ -156,7 +138,6 @@ input{
   height: 40%;
   overflow: scroll;
 }
-/*@media screen and (min-width: 500px ) and (orientation: landscape){*/
 @media screen and  (orientation: landscape){
 .list-container {
     width: 40%;
@@ -174,16 +155,11 @@ input{
   }
 }
 
-
 .location-figure {
   width:30%;
   overflow: hidden
 }
 
-/*.location-figure > picture {
-  width:100%;
-  height: 100%
-}*/
 .location-figure > picture > img  {
   width:100%;
 }
@@ -198,11 +174,6 @@ input{
   text-overflow:ellipsis;
   width: 100%;
 }
-@media screen and (min-width: 750px ) {
-.location-title {
-  /*font-size : 1.5em;*/
- }
-}
 
 .location-address{
   width: 100%;
@@ -211,19 +182,12 @@ input{
   overflow: hidden;
   text-overflow:ellipsis;
 }
-@media screen and (min-width: 750px ) {
-.location-address{
-  white-space:normal;
-  /*font-size : 2em;*/
- }
-}
 
 #pac-input
 {
   background-color: #fff;
   margin: 0.5em 25%;
   height:2em;
-  /*text-overflow: ellipsis;*/
   width : 50%;
 }
 
@@ -233,7 +197,6 @@ input{
   height: 60%;
 }
 
-/*@media screen and (min-width: 500px ) and (orientation: landscape){*/
 @media screen and  (orientation: landscape){
   .map-container {
     width: 60%;
