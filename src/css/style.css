@@ -155,14 +155,14 @@ input{
   }
 }
 
-.location-figure {
+/*.location-figure {
   width:30%;
   overflow: hidden
 }
 
 .location-figure > picture > img  {
   width:100%;
-}
+}*/
 .location-discription{
   width : 50%;
   margin: 0 0.5em;
