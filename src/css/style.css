@@ -45,7 +45,7 @@ li{
   width:100%;
   margin: 0 0 0.5em 0;
   background: #fafafa;
-  overflow: auto;
+  overflow: hidden;
 }
 
 
@@ -81,7 +81,7 @@ input{
   height:100%;
   padding:  0.5em;
 }
-@media screen and (min-width: 500px ) and (orientation: landscape){
+@media screen and   (max-width: 700px) and (orientation: landscape) and (min-aspect-ratio: 1024/750){
 .main-container {
   height: 90%;
   }
@@ -94,7 +94,7 @@ input{
   color:#eee;
   background: #0d3479;
 }
-@media screen and (min-width: 500px ) and (orientation: landscape){
+@media screen and (max-width: 700px) and (orientation: landscape) and (min-aspect-ratio: 1024/750){
  .header-container {
     height: 10%;
   }
@@ -105,7 +105,7 @@ input{
   font-weight: 800;
   margin: auto;
 }
-@media screen and (min-width: 500px ) and (orientation: landscape){
+@media screen and (orientation: landscape){
  .site-title{
     /*font-size:2em;*/
     width: 50%;
@@ -126,13 +126,8 @@ input{
   margin:0.5em 0;
 }
 
-@media screen and (min-width: 500px ) and (orientation: landscape){
-  .filter-container {
-    width: 50%;
-  }
-}
-
-@media screen and (min-width: 750px ) {
+/*@media screen and (min-width: 500px ) and (orientation: landscape){*/
+@media screen and (orientation: landscape){
   .filter-container {
     width: 50%;
   }
@@ -161,7 +156,8 @@ input{
   height: 40%;
   overflow: scroll;
 }
-@media screen and (min-width: 500px ) and (orientation: landscape){
+/*@media screen and (min-width: 500px ) and (orientation: landscape){*/
+@media screen and  (orientation: landscape){
 .list-container {
     width: 40%;
     height:100%;
@@ -172,6 +168,13 @@ input{
 .list-item {
   height:17%;
 }
+@media screen and (min-width: 700px) and (orientation: landscape) {
+  .list-item {
+    height: 12%;
+  }
+}
+
+
 .location-figure {
   width:30%;
   overflow: hidden
@@ -186,14 +189,40 @@ input{
 }
 .location-discription{
   width : 50%;
-  margin: 0  0.5em;
+  margin: 0 0.5em;
+}
+
+.location-title{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  width: 100%;
+}
+@media screen and (min-width: 750px ) {
+.location-title {
+  /*font-size : 1.5em;*/
+ }
+}
+
+.location-address{
+  width: 100%;
+  white-space: nowrap;
+  font-size:0.5em;
+  overflow: hidden;
+  text-overflow:ellipsis;
+}
+@media screen and (min-width: 750px ) {
+.location-address{
+  white-space:normal;
+  /*font-size : 2em;*/
+ }
 }
 
 #pac-input
 {
   background-color: #fff;
   margin: 0.5em 25%;
-  height:7%;
+  height:2em;
   /*text-overflow: ellipsis;*/
   width : 50%;
 }
@@ -204,7 +233,8 @@ input{
   height: 60%;
 }
 
-@media screen and (min-width: 500px ) and (orientation: landscape){
+/*@media screen and (min-width: 500px ) and (orientation: landscape){*/
+@media screen and  (orientation: landscape){
   .map-container {
     width: 60%;
     height:100%;
@@ -216,7 +246,6 @@ input{
   width : 100%;
   z-index : 1 ;
 }
-
 
 #map *  {
   max-width: none;

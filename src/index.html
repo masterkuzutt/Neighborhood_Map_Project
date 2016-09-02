@@ -13,10 +13,7 @@
     <div class="filter-container ">
       <input type="text" name="filer-textbox" id="filter-textbox">
       <input type="button" class="apply-filter btn" value="&#xf0b0;">
-      <!-- <i class="fa fa-filter" aria-hidden="true" class="apply-filter btn"></i> -->
       <input type="button" class="clear-fileter btn" value="&#xf0e2;">
-      <!-- <i class="fa fa-times" aria-hidden="true"class="clear-fileter btn"></i> -->
-
     </div>
   </div>
   <div class="main-container">
@@ -29,10 +26,10 @@
             </picture>
           </figure>
           <div class="location-discription">
-            <h3 data-bind="text : title"></h3>
-            <p data-bind="text : discription"></p>
+            <h3 class="location-title"  data-bind="text : title"></h3>
+            <p class="location-address" data-bind="text : address"></p>
           </div>
-          <input type="button" class="delete-btn btn" value="&#xf00d;">
+          <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
         </li>
       </ul>
     </div>
