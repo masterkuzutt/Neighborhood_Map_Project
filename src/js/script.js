@@ -208,6 +208,8 @@ var ViewModel = function() {
         self.map.fitBounds(self.bounds);
         $('.apply-filter').click(this, this.applyFileter);
         $('.clear-fileter').click(this, this.clearFilter);
+
+        $('.slidebar-btn').click(this,this.changeSidebar);
     };
 
     /**
@@ -311,6 +313,30 @@ var ViewModel = function() {
             });
         }
     };
+
+    this.changeSidebar= function () {
+        var element = $(".sidebar-container");
+        if ( element.css('left') !== "0px" ){
+           element.css('left',"0");
+          console.log(element.css('left'));
+        }else{
+          element.css('left',"-300px");
+
+        }
+    }
+
+    this.openSidebar= function () {
+        $(".sidebar-container").css('left', "0");
+        $('.slidebar-btn').click(self,self.closeSidebar);
+
+    }
+
+    /* Set the width of the side navigation to 0 */
+    this.closeSidebar = function() {
+        $(".sidebar-container").css('left', "-300px");
+        $('.slidebar-btn').click(self,self.openSidebar);
+    }
+
 
 };
 

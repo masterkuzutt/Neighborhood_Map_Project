@@ -10,32 +10,28 @@
 </head>
 <body>
   <div class="header-container">
+    <i class="slidebar-btn fa fa-bars" aria-hidden="true"></i>
     <h1 class="site-title">Neighborhood Map</h1>
-    <div class="filter-container ">
-      <input type="text" name="filer-textbox" id="filter-textbox">
-      <input type="button" class="apply-filter btn" value="&#xf0b0;">
-      <input type="button" class="clear-fileter btn" value="&#xf0e2;">
-    </div>
   </div>
   <div class="main-container">
-    <div class="list-container">
-      <ul data-bind="foreach : locationData">
-        <li class="list-item" data-bind="visible: visibility">
-           <!-- <figure class="location-figure">
-            <picture>
-              <img data-bind="attr: {src:imgUrl}" src="" alt="location img">
-            </picture>
-          </figure> -->
-          <div class="location-discription">
-            <h3 class="location-title"  data-bind="text : title"></h3>
-            <p class="location-address" data-bind="text : address"></p>
-          </div>
-          <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
-        </li>
-      </ul>
+    <div class="sidebar-container">
+      <div class="filter-container">
+        <input type="text" name="filer-textbox" id="filter-textbox">
+        <input type="button" class="apply-filter btn" value="&#xf0b0;">
+        <input type="button" class="clear-fileter btn" value="&#xf0e2;">
+      </div>
+      <div class="list-container">
+        <ul data-bind="foreach : locationData">
+          <li class="list-item" data-bind="visible: visibility">
+            <div class="location-discription">
+              <h3 class="location-title"  data-bind="text : title"></h3>
+              <!-- <p class="location-address" data-bind="text : address"></p> -->
+            </div>
+            <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
+          </li>
+        </ul>
+      </div>
     </div>
-
-
     <div class="map-container">
       <input type="text" name="pac-input" id="pac-input">
       <div id="map">
@@ -46,8 +42,7 @@
   <script src="js/libs/knockout-3.2.0.js"></script>
 
   <script src="js/script.js"></script>
-  <script asybc defer
+  <script async defer
   src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry,places&key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=init"></script>
-  <!-- <script asybc defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=initMap"></script> -->
 </body>
 </html>
