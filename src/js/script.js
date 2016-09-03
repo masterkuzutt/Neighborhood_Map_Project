@@ -1,3 +1,26 @@
+//utility
+/**
+ * @description create marker icon for google map and set it to marker
+ * @param  {sting}  colorcode 'FFF'
+ * @return {object} image marker object for google map marker
+ */
+function createMarkerIcon(markerColor) {
+    var markerImage = new google.maps.MarkerImage(
+      'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
+      '|40|_|%E2%80%A2',
+       new google.maps.Size(21, 34),
+      new google.maps.Point(0, 0),
+      new google.maps.Point(10, 34),
+      new google.maps.Size(21,34));
+    return markerImage;
+};
+
+
+
+
+
+
+
 /**
  * @description Represents  location data position and related data for google.maps.api
  * @constructor
@@ -66,7 +89,40 @@ var INITIAL_LOCATION_DATA = [{
     },
     imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
     address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
+}, {
+    title: '東部練馬駅',
+    position: {
+        lat: 35.768671,
+        lng: 139.66238199999998
+    },
+    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
+    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
+} ,{
+    title: '東部練馬駅',
+    position: {
+        lat: 35.768671,
+        lng: 139.66238199999998
+    },
+    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
+    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
+}, {
+    title: '東部練馬駅',
+    position: {
+        lat: 35.768671,
+        lng: 139.66238199999998
+    },
+    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
+    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
+} ,{
+    title: '東部練馬駅',
+    position: {
+        lat: 35.768671,
+        lng: 139.66238199999998
+    },
+    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
+    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
 }];
+
 
 //goole map style object declaration
 var STYLES = [{
@@ -162,10 +218,14 @@ var ViewModel = function() {
     // init locacion data
     this.locationData = ko.observableArray([]);
 
+    // init icon for marker
+    this.defaultIcon = createMarkerIcon('66d9ff');
+    this.selectedIcon = createMarkerIcon('0d3480');
+
     //init searchBox
-    this.input = document.getElementById('pac-input');
-    this.searchBox = new google.maps.places.SearchBox(this.input);
-    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(this.input);
+    var input = document.getElementById('pac-input'); //search box
+    this.searchBox = new google.maps.places.SearchBox(input);
+    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     this.map.addListener('bounds_changed', function() {
         self.searchBox.setBounds(self.map.getBounds());
     });
@@ -196,41 +256,54 @@ var ViewModel = function() {
 
     });
 
+    // init icons for markers
+    console.log(this);
+
     /**
      * @description
      * initial function for ViewModel. this function should be called after construction;
      */
     this.init = function() {
+
         //init  location data
         for (var i = 0, len = INITIAL_LOCATION_DATA.length; i < len; i++) {
             this.createLocation((INITIAL_LOCATION_DATA[i]));
         }
         self.map.fitBounds(self.bounds);
-        $('.apply-filter').click(this, this.applyFileter);
-        $('.clear-fileter').click(this, this.clearFilter);
+
+        //append function to click event to each element
+        $('.apply-filter-btn').click(this, this.applyFileter);
+
+        $('.clear-fileter-btn').click(this, this.clearFilter);
 
         $('.slidebar-btn').click(this,this.changeSidebar);
+
+        $('')
     };
 
     /**
      * @description
      *create location and push it to locationData ovservable array.this function construct location data from Location class
-     * @param  {object} this data should be same as Location class @oaram
+     * @param  {object} this data should be same as Location class
      */
-    this.createLocation = function(data) {
+    this.createLocation = function (data) {
 
         var location = new Location(data);
         //  console.log(location);
         location.marker.setMap(self.map);
+        location.marker.setIcon(self.defaultIcon);
+
         location.marker.addListener('click', function() {
             self.setInfoWindow(location);
         });
+
         self.bounds.extend(location.latLng);
         this.setDiscription(location);
         this.locationData.push(location);
+
+        //
         $(".list-container").scrollTop($(".list-container")[0].scrollHeight);
     };
-
 
     /**
      * @description delete location from locationData observableArray

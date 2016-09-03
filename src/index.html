@@ -15,21 +15,23 @@
   </div>
   <div class="main-container">
     <div class="sidebar-container">
-      <div class="filter-container">
-        <input type="text" name="filer-textbox" id="filter-textbox">
-        <input type="button" class="apply-filter btn" value="&#xf0b0;">
-        <input type="button" class="clear-fileter btn" value="&#xf0e2;">
-      </div>
-      <div class="list-container">
-        <ul data-bind="foreach : locationData">
-          <li class="list-item" data-bind="visible: visibility">
-            <div class="location-discription">
-              <h3 class="location-title"  data-bind="text : title"></h3>
-              <!-- <p class="location-address" data-bind="text : address"></p> -->
-            </div>
-            <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
-          </li>
-        </ul>
+      <div>
+        <div class="filter-container">
+          <input type="text" name="filer-textbox" id="filter-textbox">
+          <input type="button" class="apply-filter-btn btn" value="&#xf0b0;">
+          <input type="button" class="clear-fileter-btn btn" value="&#xf0e2;">
+        </div>
+        <div class="list-container">
+          <ul data-bind="foreach : locationData">
+            <li class="list-item" data-bind="visible: visibility">
+              <div class="location-discription">
+                <h3 class="location-title"  data-bind="text : title"></h3>
+                <!-- <p class="location-address" data-bind="text : address"></p> -->
+              </div>
+              <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="map-container">
