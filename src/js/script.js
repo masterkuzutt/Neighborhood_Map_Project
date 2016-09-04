@@ -1,4 +1,3 @@
-//utility
 /**
  * @description create marker icon for google map and set it to marker
  * @param  {sting}  colorcode 'FFF'
@@ -6,19 +5,14 @@
  */
 function createMarkerIcon(markerColor) {
     var markerImage = new google.maps.MarkerImage(
-      'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
-      '|40|_|%E2%80%A2',
-       new google.maps.Size(21, 34),
-      new google.maps.Point(0, 0),
-      new google.maps.Point(10, 34),
-      new google.maps.Size(21,34));
+        'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
+        '|40|_|%E2%80%A2',
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 34),
+        new google.maps.Size(21, 34));
     return markerImage;
-};
-
-
-
-
-
+}
 
 
 /**
@@ -36,8 +30,7 @@ var Location = function(data) {
     this.address = ko.observable(data.address);
     this.imgUrl = data.imgUrl || "";
     this.message = "";
-    this.discription = {};
-    this.discription.disc= ko.observableArray([]);
+    this.discription = "";
     this.visibility = ko.observable(true);
     this.latLng = new google.maps.LatLng(data.position.lat, data.position.lng);
     this.marker = new google.maps.Marker({
@@ -91,7 +84,7 @@ var INITIAL_LOCATION_DATA = [{
     },
     imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
     address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
-},];
+}, ];
 
 
 //goole map style object declaration
@@ -174,8 +167,6 @@ var ViewModel = function() {
     "use strict";
     var self = this;
 
-
-
     // init map
     this.map = new google.maps.Map($('#map')[0], {
         center: INITIAL_LOCATION_DATA[0].position,
@@ -192,7 +183,6 @@ var ViewModel = function() {
 
     // init icon for marker
     this.defaultIcon = createMarkerIcon('66d9ff');
-    this.selectedIcon = createMarkerIcon('0d3480');
 
     //init searchBox
     var input = document.getElementById('pac-input'); //search box
@@ -210,19 +200,22 @@ var ViewModel = function() {
         }
 
         if (window.confirm("Add this place to list ? \n" + place[0].name)) {
-            var data = {}
-            data.title =  place[0].name;
-            data.position= {
-                    lat: place[0].geometry.location.lat(),
-                    lng: place[0].geometry.location.lng()
-                };
-            if ( place[0].photos ){
-              data.imgUrl =  place[0].photos[0].getUrl({'maxWidth': 1100,'maxHeight': 100});
+            var data = {};
+            data.title = place[0].name;
+            data.position = {
+                lat: place[0].geometry.location.lat(),
+                lng: place[0].geometry.location.lng()
+            };
+            if (place[0].photos) {
+                data.imgUrl = place[0].photos[0].getUrl({
+                    'maxWidth': 1100,
+                    'maxHeight': 100
+                });
             } else {
-              data.imgUrl =  "no-image";
+                data.imgUrl = "no-image";
             }
 
-            data.address =  place[0].formatted_address;
+            data.address = place[0].formatted_address;
 
 
             self.createLocation(data);
@@ -235,9 +228,6 @@ var ViewModel = function() {
         self.map.fitBounds(self.bounds);
 
     });
-
-    // init icons for markers
-    console.log(this);
 
     /**
      * @description
@@ -256,7 +246,7 @@ var ViewModel = function() {
 
         $('.clear-fileter-btn').click(this, this.clearFilter);
 
-        $('.slidebar-btn').click(this,this.changeSidebar);
+        $('.slidebar-btn').click(this, this.changeSidebar);
 
     };
 
@@ -265,30 +255,67 @@ var ViewModel = function() {
      *create location and push it to locationData ovservable array.this function construct location data from Location class
      * @param  {object} this data should be same as Location class
      */
-    this.createLocation = function (data) {
+    this.createLocation = function(data) {
 
         var location = new Location(data);
 
         location.marker.setMap(self.map);
         location.marker.setIcon(self.defaultIcon);
 
+        //add click event to marker
         location.marker.addListener('click', function() {
             self.setInfoWindow(location);
         });
-
         self.bounds.extend(location.latLng);
         this.setDiscription(location);
         this.locationData.push(location);
 
-        //
+
         $(".list-container").scrollTop($(".list-container")[0].scrollHeight);
+    };
+
+    /**
+     * @description set discription to location object from wikipedia by using wikipedia rest api
+     * @param {object}
+     */
+    this.setDiscription = function(location) {
+        console.log('in');
+        location.discription = "<p>tring to get data from wikipedia. reopen later</p>";
+        var wikirequestTimeout = setTimeout(function() {
+            location.discription = "<p>failed to get wikipedia search</p>";
+        }, 8000);
+
+        var wikipediaUrl = 'https://jp.wikipedia.org/w/api.php?format=json&action=opensearch&search=' + location.title;
+        $.ajax({
+                method: "GET",
+                url: wikipediaUrl,
+                dataType: "jsonp"
+            })
+            .done(function(data) {
+                location.discription = "";
+                if (data[1].length > 0) {
+                    for (var i = 0, len = data[1].length; i < len; i++) {
+                        location.discription = location.discription + '<li class="test">' +
+                            '<a href=' + data[3][i] + ' target="_blank">' + data[1][i] + '</a></li>';
+                    }
+                } else {
+                    location.discription = "No related articles found in wikipedia";
+                }
+                clearTimeout(wikirequestTimeout);
+            })
+            .error(function(data) {
+                location.discription = '<p class="msg">Failed to load wikipediaa link due to' +
+                    data +
+                    ' delete location and try later</p>';
+                clearTimeout(wikirequestTimeout);
+            });
     };
 
     /**
      * @description delete location from locationData observableArray
      * @param  {object} this data should be same as Location class @oaram
      */
-    this.deleteLocation = function(data){
+    this.deleteLocation = function(data) {
         // set Null to delete marker from google map
         data.marker.setMap(null);
         self.locationData.remove(data);
@@ -322,34 +349,10 @@ var ViewModel = function() {
         }
     };
 
-    /**
-     * @description set discription to location object from wikipedia by using wikipedia rest api
-     * @param {object}
-     */
-    this.setDiscription = function(location) {
-        var wikirequestTimeout = setTimeout(function() {
-            locaiton.discription = "failed to get wikipedia search";
-        }, 8000);
-
-        var wikipediaUrl = 'https://jp.wikipedia.org/w/api.php?format=json&action=opensearch&search=' + location.title;
-        $.ajax({
-                method: "GET",
-                url: wikipediaUrl,
-                dataType: "jsonp"
-        })
-        .done(function(data) {
-            for (var i = 0, len = data[1].length; i < len; i++) {
-                // location.discription(location.discription() + '<li class="test">' +
-                //     '<a href=' + data[3][i] + ' target="_blank">' + data[1][i] + '</a></li>');
-                location.discription.disc.push({text: data[3][i] ,ref: data[1][i]});
-            }
-            clearTimeout(wikirequestTimeout);
-        });
-    };
 
     /**
      * @description set InfoWIndow object and open it. this function is expected to attach click event of google.maps.marker
-    * @param {object}
+     * @param {object}
      */
     this.setInfoWindow = function(location) {
 
@@ -358,27 +361,30 @@ var ViewModel = function() {
             // set infowindow marker
             self.infoWindow.marker = location.marker;
 
-            // self.infoWindow.setContent(location.discription());
-            self.infoWindow.setContent('<ul data-bind="foreach :disc "><li class="wiki-item"><a  href="#" data-bind="text : text,attr :{ href : ref}" target="_blank"></a></li></ul>');
-            console.log("test : ",self.locationData()[self.locationData.indexOf(location)].discription.disc());
-            self.infoWindow.open(self.map, location.marker);
-            // ko.applyBindings(self.locationData()[self.locationData.indexOf(location)].discription.disc);
+            self.infoWindow.setContent(location.discription);
+            self.infoWindow.open(location.map, location.marker);
             self.infoWindow.addListener('closeclick', function() {
                 self.infoWindow.marker = null;
             });
         }
+        self.toggleBounce(location.marker);
     };
 
-    this.changeSidebar= function () {
+    this.changeSidebar = function() {
         var element = $(".sidebar-container");
-        if ( element.css('left') !== "0px" ){
-           element.css('left',"0");
-          // console.log(element.css('left'));
-        }else{
-          element.css('left',"-250px");
+        if (element.css('left') !== "0px") {
+            element.css('left', "0");
+        } else {
+            element.css('left', "-250px");
         }
-    }
+    };
 
+    this.toggleBounce = function(marker) {
+        var aniMationTimeout = setTimeout(function() {
+            marker.setAnimation(null);
+        }, 2000);
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+    };
 
 };
 
@@ -390,4 +396,11 @@ function init() {
     var viewmodel = new ViewModel();
     ko.applyBindings(viewmodel);
     viewmodel.init();
+}
+
+function mapLoadError() {
+    "use strict";
+    $('.sidebar-container').css('display', 'none');
+    $('.map-container').css('display', 'none');
+    $('.main-container').append('<p class="err-msg">Failed to load google map api.</p>');
 }
