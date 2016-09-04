@@ -35,7 +35,9 @@ var Location = function(data) {
     this.position = data.position;
     this.address = ko.observable(data.address);
     this.imgUrl = data.imgUrl || "";
-    this.discription = ko.observable("");
+    this.message = "";
+    this.discription = {};
+    this.discription.disc= ko.observableArray([]);
     this.visibility = ko.observable(true);
     this.latLng = new google.maps.LatLng(data.position.lat, data.position.lng);
     this.marker = new google.maps.Marker({
@@ -89,39 +91,7 @@ var INITIAL_LOCATION_DATA = [{
     },
     imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
     address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
-}, {
-    title: '東部練馬駅',
-    position: {
-        lat: 35.768671,
-        lng: 139.66238199999998
-    },
-    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
-    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
-} ,{
-    title: '東部練馬駅',
-    position: {
-        lat: 35.768671,
-        lng: 139.66238199999998
-    },
-    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
-    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
-}, {
-    title: '東部練馬駅',
-    position: {
-        lat: 35.768671,
-        lng: 139.66238199999998
-    },
-    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
-    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
-} ,{
-    title: '東部練馬駅',
-    position: {
-        lat: 35.768671,
-        lng: 139.66238199999998
-    },
-    imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
-    address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
-}];
+},];
 
 
 //goole map style object declaration
@@ -204,6 +174,8 @@ var ViewModel = function() {
     "use strict";
     var self = this;
 
+
+
     // init map
     this.map = new google.maps.Map($('#map')[0], {
         center: INITIAL_LOCATION_DATA[0].position,
@@ -238,18 +210,26 @@ var ViewModel = function() {
         }
 
         if (window.confirm("Add this place to list ? \n" + place[0].name)) {
-            self.createLocation({
-                title: place[0].name,
-                position: {
+            var data = {}
+            data.title =  place[0].name;
+            data.position= {
                     lat: place[0].geometry.location.lat(),
                     lng: place[0].geometry.location.lng()
-                },
-                imgUrl: place[0].photos[0].getUrl({
-                    'maxWidth': 1100,
-                    'maxHeight': 100
-                }),
-                address: place[0].formatted_address
-            });
+                };
+            if ( place[0].photos ){
+              data.imgUrl =  place[0].photos[0].getUrl({'maxWidth': 1100,'maxHeight': 100});
+            } else {
+              data.imgUrl =  "no-image";
+            }
+
+            data.address =  place[0].formatted_address;
+
+
+            self.createLocation(data);
+
+            //show infowindow when data add
+            self.setInfoWindow(self.locationData()[self.locationData().length - 1]);
+
         }
         //fit bounds for new location
         self.map.fitBounds(self.bounds);
@@ -278,7 +258,6 @@ var ViewModel = function() {
 
         $('.slidebar-btn').click(this,this.changeSidebar);
 
-        $('')
     };
 
     /**
@@ -289,7 +268,7 @@ var ViewModel = function() {
     this.createLocation = function (data) {
 
         var location = new Location(data);
-        //  console.log(location);
+
         location.marker.setMap(self.map);
         location.marker.setIcon(self.defaultIcon);
 
@@ -357,14 +336,15 @@ var ViewModel = function() {
                 method: "GET",
                 url: wikipediaUrl,
                 dataType: "jsonp"
-            })
-            .done(function(data) {
-                for (var i = 0, len = data[1].length; i < len; i++) {
-                    location.discription(location.discription() + '<li class="test">' +
-                        '<a href=' + data[3][i] + ' target="_blank">' + data[1][i] + '</a></li>');
-                }
-                clearTimeout(wikirequestTimeout);
-            });
+        })
+        .done(function(data) {
+            for (var i = 0, len = data[1].length; i < len; i++) {
+                // location.discription(location.discription() + '<li class="test">' +
+                //     '<a href=' + data[3][i] + ' target="_blank">' + data[1][i] + '</a></li>');
+                location.discription.disc.push({text: data[3][i] ,ref: data[1][i]});
+            }
+            clearTimeout(wikirequestTimeout);
+        });
     };
 
     /**
@@ -372,16 +352,18 @@ var ViewModel = function() {
     * @param {object}
      */
     this.setInfoWindow = function(location) {
-        if (this.infoWindow.marker !== location.marker) {
+
+        if (self.infoWindow.marker !== location.marker) {
 
             // set infowindow marker
-            this.infoWindow.marker = location.marker;
+            self.infoWindow.marker = location.marker;
 
-            this.infoWindow.setContent(location.discription());
-
-            this.infoWindow.open(this.map, location.marker);
-
-            this.infoWindow.addListener('closeclick', function() {
+            // self.infoWindow.setContent(location.discription());
+            self.infoWindow.setContent('<ul data-bind="foreach :disc "><li class="wiki-item"><a  href="#" data-bind="text : text,attr :{ href : ref}" target="_blank"></a></li></ul>');
+            console.log("test : ",self.locationData()[self.locationData.indexOf(location)].discription.disc());
+            self.infoWindow.open(self.map, location.marker);
+            // ko.applyBindings(self.locationData()[self.locationData.indexOf(location)].discription.disc);
+            self.infoWindow.addListener('closeclick', function() {
                 self.infoWindow.marker = null;
             });
         }
@@ -391,23 +373,10 @@ var ViewModel = function() {
         var element = $(".sidebar-container");
         if ( element.css('left') !== "0px" ){
            element.css('left',"0");
-          console.log(element.css('left'));
+          // console.log(element.css('left'));
         }else{
-          element.css('left',"-300px");
-
+          element.css('left',"-250px");
         }
-    }
-
-    this.openSidebar= function () {
-        $(".sidebar-container").css('left', "0");
-        $('.slidebar-btn').click(self,self.closeSidebar);
-
-    }
-
-    /* Set the width of the side navigation to 0 */
-    this.closeSidebar = function() {
-        $(".sidebar-container").css('left', "-300px");
-        $('.slidebar-btn').click(self,self.openSidebar);
     }
 
 

@@ -24,11 +24,10 @@
         <div class="list-container">
           <ul data-bind="foreach : locationData">
             <li class="list-item" data-bind="visible: visibility">
-              <div class="location-discription">
-                <h3 class="location-title"  data-bind="text : title"></h3>
-                <!-- <p class="location-address" data-bind="text : address"></p> -->
+              <div class="location-row">
+                  <h3 class="location-title"  data-bind="click : $parent.setInfoWindow,text : title"></h3>
+                  <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
               </div>
-              <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
             </li>
           </ul>
         </div>
