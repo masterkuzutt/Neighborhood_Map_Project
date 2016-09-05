@@ -12,7 +12,7 @@
 
 <body>
     <div class="header-container">
-        <i class="slidebar-btn fa fa-bars" aria-hidden="true"></i>
+        <i data-bind="click : changeSidebar" class="slidebar-btn fa fa-bars" aria-hidden="true"></i>
         <h1 class="site-title">Neighborhood Map</h1>
     </div>
     <div class="main-container">
@@ -20,8 +20,8 @@
             <div>
                 <div class="filter-container">
                     <input type="text" name="filer-textbox" id="filter-textbox">
-                    <input type="button" class="apply-filter-btn btn" value="&#xf0b0;">
-                    <input type="button" class="clear-fileter-btn btn" value="&#xf0e2;">
+                    <input data-bind="click : applyFileter" type="button" class="apply-filter-btn btn" value="&#xf0b0;">
+                    <input data-bind="click : clearFilter" type="button" class="clear-fileter-btn btn" value="&#xf0e2;">
                 </div>
                 <div class="list-container">
                     <ul class="location-list" data-bind="foreach : locationData">

@@ -222,10 +222,7 @@ var ViewModel = function() {
             }
 
             data.address = place[0].formatted_address;
-
-
             self.createLocation(data);
-
             //show infowindow when data add
             self.setInfoWindow(self.locationData()[self.locationData().length - 1]);
 
@@ -240,20 +237,11 @@ var ViewModel = function() {
      * initial function for ViewModel. this function should be called after construction;
      */
     this.init = function() {
-
-        //init  location data
-        for (var i = 0, len = INITIAL_LOCATION_DATA.length; i < len; i++) {
-            this.createLocation((INITIAL_LOCATION_DATA[i]));
-        }
-        self.map.fitBounds(self.bounds);
-
-        //append function to click event to each element
-        $('.apply-filter-btn').click(this, this.applyFileter);
-
-        $('.clear-fileter-btn').click(this, this.clearFilter);
-
-        $('.slidebar-btn').click(this, this.changeSidebar);
-
+      //init  location data
+      for (var i = 0, len = INITIAL_LOCATION_DATA.length; i < len; i++) {
+        this.createLocation((INITIAL_LOCATION_DATA[i]));
+      }
+      self.map.fitBounds(self.bounds);
     };
 
     /**
@@ -275,7 +263,6 @@ var ViewModel = function() {
         self.bounds.extend(location.latLng);
         this.setDiscription(location);
         this.locationData.push(location);
-
 
         $(".list-container").scrollTop($(".list-container")[0].scrollHeight);
     };
