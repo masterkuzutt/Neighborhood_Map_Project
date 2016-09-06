@@ -1,5 +1,5 @@
 # Neighborhood Map Project
-This project is for Front-End developer nanodegree.by using google maps api ,wikipedia web and knockout.js , implement web app that show list of location and icon on the map.
+This project is for Frontend developer naanodegree by using google maps api ,wikipedia web and knockout.js , implement web app that show list of location and icon on the map.
 
 ## How To Use
 ### installation
