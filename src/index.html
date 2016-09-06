@@ -19,19 +19,20 @@
         <div class="sidebar-container">
             <div>
                 <div class="filter-container">
-                    <input type="text" name="filer-textbox" id="filter-textbox">
+                    <input type="search" data-bind="value: query,valueUpdate:'keyup' " name="filer-textbox" id="filter-textbox">
                     <input data-bind="click : applyFileter" type="button" class="apply-filter-btn btn" value="&#xf0b0;">
                     <input data-bind="click : clearFilter" type="button" class="clear-fileter-btn btn" value="&#xf0e2;">
                 </div>
                 <div class="list-container">
-                    <ul class="location-list" data-bind="foreach : locationData">
+                    <ul class="location-list" data-bind="template: { name: 'location' ,foreach :locationData}"></ul>
+                      <script type="text/html" id="location">
                         <li class="list-item" data-bind="visible: visibility">
                             <div class="location-row">
                                 <h3 class="location-title" data-bind="click : $parent.setInfoWindow,text : title"></h3>
                                 <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
                             </div>
                         </li>
-                    </ul>
+                      </script>
                 </div>
             </div>
         </div>

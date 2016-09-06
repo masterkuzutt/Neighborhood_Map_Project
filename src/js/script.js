@@ -187,6 +187,11 @@ var ViewModel = function() {
     // init locacion data
     this.locationData = ko.observableArray([]);
 
+    // init filter
+    this.query = ko.observable("");
+    this.search = function  (value) {        
+    };
+
     // init icon for marker
     this.defaultIcon = createMarkerIcon('66d9ff');
 
