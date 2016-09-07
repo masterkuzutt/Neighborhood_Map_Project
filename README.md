@@ -19,7 +19,7 @@ This project is for Frontend developer naanodegree by using google maps api ,wik
 * click marker on the map will pop up window of wikipedia link.
 
 ### apply filter
-* input search word on header and click filter icon.
+* input search word on sarch box  and click filter icon or enter key.
 ### clear filter
 * cleck/tap clear icon on the header
 

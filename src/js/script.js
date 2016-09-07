@@ -188,8 +188,11 @@ var ViewModel = function() {
     this.locationData = ko.observableArray([]);
 
     // init filter
-    this.query = ko.observable("");
-    this.search = function  (value) {        
+    this.query = ko.observable(""); /// for trigger search
+    this.search = function  () {
+      for (var i = 0, len = self.locationData().length; i < len; i++) {
+        self.filter(self.locationData()[i],$('#filter-textbox').val());
+      }
     };
 
     // init icon for marker
@@ -247,6 +250,7 @@ var ViewModel = function() {
         this.createLocation((INITIAL_LOCATION_DATA[i]));
       }
       self.map.fitBounds(self.bounds);
+      self.query.subscribe(self.search);
     };
 
     /**
@@ -337,13 +341,20 @@ var ViewModel = function() {
     this.applyFileter = function() {
         var inputText = $('#filter-textbox').val();
         for (var i = 0, len = self.locationData().length; i < len; i++) {
-            if (self.locationData()[i].title.match(inputText)) {
-                self.locationData()[i].marker.setMap(self.map);
-                self.locationData()[i].visibility(true);
-            } else {
-                self.locationData()[i].marker.setMap(null);
-                self.locationData()[i].visibility(false);
-            }
+          self.filter(self.locationData()[i],inputText);
+        }
+    };
+
+    /*
+     *
+     */
+    this.filter = function (location,inputText) {
+        if (location.title.match(inputText)) {
+            location.marker.setMap(self.map);
+            location.visibility(true);
+        } else {
+            location.marker.setMap(null);
+            location.visibility(false);
         }
     };
 
