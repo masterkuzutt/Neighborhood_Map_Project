@@ -1,3 +1,8 @@
+var $ = require ("./libs/jquery.min.js"),
+    jQuery = $,
+    ko = require ("./libs/knockout-3.2.0.js");
+// require ("./libs/pouchdb-5.4.5.min.js");
+
 /* INITIAL VALUE */
 //Initial data declaration
 var INITIAL_LOCATION_DATA = [{
@@ -114,8 +119,6 @@ var STYLES = [{
         }]
     }
 ];
-
-
 
 /**
  * @description create marker icon for google map and set it to marker
@@ -410,6 +413,7 @@ function init() {
     viewmodel.init();
 
 }
+init();
 
 function mapLoadError() {
     "use strict";

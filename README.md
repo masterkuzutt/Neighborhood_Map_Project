@@ -26,3 +26,4 @@ This project is for Frontend developer naanodegree by using google maps api ,wik
 ## Limitation and Future plan
 * This webapp do not store data. if you close browser tab or  window, all the data you add will disappear.I will add that function.
 * infoWindow on the map is created by jQuery append. I'll change to use knockout.js functionality or add-ons.
+* now google map api is loaded sync. figure it out how to load async with webpack
