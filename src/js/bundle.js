@@ -44,127 +44,13 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	$ = __webpack_require__ (1);
-	jQuery = $;
-	ko = __webpack_require__ (3);
+	var $ = __webpack_require__ (1),
+	    jQuery = $,
+	    ko = __webpack_require__ (3),
+	    config = __webpack_require__(6)
+
 	// require ("./libs/pouchdb-5.4.5.min.js");
 
-	/* INITIAL VALUE */
-	//Initial data declaration
-	var INITIAL_LOCATION_DATA = [{
-	      title: '阿佐ヶ谷駅',
-	      position: {
-	          lat: 35.704872,
-	          lng: 139.63585899999998
-	      },
-	      imgUrl: 'https://lh4.googleusercontent.com/-qSlKaZvHebQ/V4zlTsr9c1I/AAAAAAACKZo/UJ8hDXIwcjwscIOqEWSNBMBP2_khJ_glACLIB/w1100-h100-k/',
-	      address: '日本, 〒166-0004 東京都杉並区阿佐谷南３丁目５８'
-	  }, {
-	      title: '高円寺駅',
-	      position: {
-	          lat: 35.7052366,
-	          lng: 139.64966200000003
-	      },
-	      imgUrl: 'https://lh5.googleusercontent.com/-10yIPR5YrF4/VzbKSgsx2BI/AAAAAAABoOs/jvwhx7GkRbwIa0DVfgsbUQQkV3KwwnAcgCLIB/w1100-h100-k/',
-	      address: '日本, 〒166-0003 東京都杉並区高円寺南４丁目４８'
-	  }, {
-	      title: '大森駅',
-	      position: {
-	          lat: 35.5884467,
-	          lng: 139.72786829999995
-	      },
-	      imgUrl: 'https://lh4.googleusercontent.com/-x52fiD5jgRg/V2382yj06cI/AAAAAAAJcEE/UFywvGiWj0w7tbql_CFn3tblRHx9aEH3wCLIB/w1100-h100-k/',
-	      address: '日本, 〒143-0016 東京都大田区大森北１丁目２９−１１'
-	  }, {
-	      title: '武蔵小金井駅',
-	      position: {
-	          lat: 35.7010622,
-	          lng: 139.50674030000005
-	      },
-	      imgUrl: 'https://lh3.googleusercontent.com/-dpD-iGgT2KY/V5N38aYK13I/AAAAAAAAAHg/FPSnN7UzXwsSbOR7e6ZzieWwjiyzuKzqwCLIB/w1100-h100-k/',
-	      address: '日本, 〒184-0004 東京都小金井市本町６丁目１４'
-	  }, {
-	      title: '東部練馬駅',
-	      position: {
-	          lat: 35.768671,
-	          lng: 139.66238199999998
-	      },
-	      imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
-	      address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
-	  },
-	];
-
-	  //goole map style object declaration
-	var STYLES = [{
-	        featureType: 'water',
-	        stylers: [{
-	            color: '#19a0d8'
-	        }]
-	    }, {
-	        featureType: 'administrative',
-	        elementType: 'labels.text.stroke',
-	        stylers: [{
-	            color: '#ffffff'
-	        }, {
-	            weight: 6
-	        }]
-	    }, {
-	        featureType: 'administrative',
-	        elementType: 'labels.text.fill',
-	        stylers: [{
-	            color: '#e85113'
-	        }]
-	    }, {
-	        featureType: 'road.highway',
-	        elementType: 'geometry.stroke',
-	        stylers: [{
-	            color: '#efe9e4'
-	        }, {
-	            lightness: -40
-	        }]
-	    }, {
-	        featureType: 'transit.station',
-	        stylers: [{
-	            weight: 9
-	        }, {
-	            hue: '#e85113'
-	        }]
-	    }, {
-	        featureType: 'road.highway',
-	        elementType: 'labels.icon',
-	        stylers: [{
-	            visibility: 'off'
-	        }]
-	    }, {
-	        featureType: 'water',
-	        elementType: 'labels.text.stroke',
-	        stylers: [{
-	            lightness: 100
-	        }]
-	    }, {
-	        featureType: 'water',
-	        elementType: 'labels.text.fill',
-	        stylers: [{
-	            lightness: -100
-	        }]
-	    }, {
-	        featureType: 'poi',
-	        elementType: 'geometry',
-	        stylers: [{
-	            visibility: 'on'
-	        }, {
-	            color: '#f0e4d3'
-	        }]
-	    }, {
-	        featureType: 'road.highway',
-	        elementType: 'geometry.fill',
-	        stylers: [{
-	            color: '#efe9e4'
-	        }, {
-	            lightness: -25
-	        }]
-	    }
-	];
 
 	/**
 	 * @description create marker icon for google map and set it to marker
@@ -181,7 +67,6 @@
 	        new google.maps.Size(21, 34));
 	    return markerImage;
 	}
-
 
 	/**
 	 * @description Represents  location data position and related data for google.maps.api
@@ -213,7 +98,6 @@
 	};
 
 
-
 	/**
 	 * @description Represents MV for location data and hmtl
 	 * @constructor
@@ -224,9 +108,9 @@
 
 	    // init map
 	    this.map = new google.maps.Map($('#map')[0], {
-	        center: INITIAL_LOCATION_DATA[0].position,
+	        center: config.INITIAL_LOCATION_DATA[0].position,
 	        zoom: 8,
-	        styles: STYLES,
+	        styles: config.STYLES,
 	        mapTypeControl: false
 	    });
 	    // init infoWindow
@@ -295,8 +179,8 @@
 	     */
 	    this.init = function() {
 	      //init  location data
-	      for (var i = 0, len = INITIAL_LOCATION_DATA.length; i < len; i++) {
-	        this.createLocation((INITIAL_LOCATION_DATA[i]));
+	      for (var i = 0, len = config.INITIAL_LOCATION_DATA.length; i < len; i++) {
+	        this.createLocation((config.INITIAL_LOCATION_DATA[i]));
 	      }
 	      self.map.fitBounds(self.bounds);
 	      self.query.subscribe(self.search);
@@ -395,7 +279,9 @@
 	    };
 
 	    /*
-	     *
+	     * @description sett visiblity true if inputText macth location title
+	     * @param {object} location object
+	     * @param {string} text
 	     */
 	    this.filter = function (location,inputText) {
 	        if (location.title.match(inputText)) {
@@ -647,6 +533,130 @@
 	var n=c(s,t);if("error"===n.status)return v.reject(e,n.value);var r=n.value;if(r)u(e,r);else{e.state=_,e.outcome=t;for(var o=-1,i=e.queue.length;++o<i;)e.queue[o].callFulfilled(t)}return e},v.reject=function(e,t){e.state=y,e.outcome=t;for(var n=-1,r=e.queue.length;++n<r;)e.queue[n].callRejected(t);return e},o.resolve=f,o.reject=l,o.all=d,o.race=h},{8:8}],12:[function(e,t,n){function r(e){if(e=""+e,!(e.length>1e4)){var t=/^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(e);if(t){var n=parseFloat(t[1]),r=(t[2]||"ms").toLowerCase();switch(r){case"years":case"year":case"yrs":case"yr":case"y":return n*l;case"days":case"day":case"d":return n*f;case"hours":case"hour":case"hrs":case"hr":case"h":return n*c;case"minutes":case"minute":case"mins":case"min":case"m":return n*u;case"seconds":case"second":case"secs":case"sec":case"s":return n*s;case"milliseconds":case"millisecond":case"msecs":case"msec":case"ms":return n}}}}function o(e){return e>=f?Math.round(e/f)+"d":e>=c?Math.round(e/c)+"h":e>=u?Math.round(e/u)+"m":e>=s?Math.round(e/s)+"s":e+"ms"}function i(e){return a(e,f,"day")||a(e,c,"hour")||a(e,u,"minute")||a(e,s,"second")||e+" ms"}function a(e,t,n){return t>e?void 0:1.5*t>e?Math.floor(e/t)+" "+n:Math.ceil(e/t)+" "+n+"s"}var s=1e3,u=60*s,c=60*u,f=24*c,l=365.25*f;t.exports=function(e,t){return t=t||{},"string"==typeof e?r(e):t["long"]?i(e):o(e)}},{}],13:[function(e,t,n){"use strict";function r(e){if(null!==e)switch(typeof e){case"boolean":return e?1:0;case"number":return f(e);case"string":return e.replace(/\u0002/g,"").replace(/\u0001/g,"").replace(/\u0000/g,"");case"object":var t=Array.isArray(e),r=t?e:Object.keys(e),o=-1,i=r.length,a="";if(t)for(;++o<i;)a+=n.toIndexableString(r[o]);else for(;++o<i;){var s=r[o];a+=n.toIndexableString(s)+n.toIndexableString(e[s])}return a}return""}function o(e,t){var n,r=t,o="1"===e[t];if(o)n=0,t++;else{var i="0"===e[t];t++;var a="",s=e.substring(t,t+d),u=parseInt(s,10)+l;for(i&&(u=-u),t+=d;;){var c=e[t];if("\x00"===c)break;a+=c,t++}a=a.split("."),n=1===a.length?parseInt(a,10):parseFloat(a[0]+"."+a[1]),i&&(n-=10),0!==u&&(n=parseFloat(n+"e"+u))}return{num:n,length:t-r}}function i(e,t){var n=e.pop();if(t.length){var r=t[t.length-1];n===r.element&&(t.pop(),r=t[t.length-1]);var o=r.element,i=r.index;if(Array.isArray(o))o.push(n);else if(i===e.length-2){var a=e.pop();o[a]=n}else e.push(n)}}function a(e,t){for(var r=Math.min(e.length,t.length),o=0;r>o;o++){var i=n.collate(e[o],t[o]);if(0!==i)return i}return e.length===t.length?0:e.length>t.length?1:-1}function s(e,t){return e===t?0:e>t?1:-1}function u(e,t){for(var r=Object.keys(e),o=Object.keys(t),i=Math.min(r.length,o.length),a=0;i>a;a++){var s=n.collate(r[a],o[a]);if(0!==s)return s;if(s=n.collate(e[r[a]],t[o[a]]),0!==s)return s}return r.length===o.length?0:r.length>o.length?1:-1}function c(e){var t=["boolean","number","string","object"],n=t.indexOf(typeof e);return~n?null===e?1:Array.isArray(e)?5:3>n?n+2:n+3:Array.isArray(e)?5:void 0}function f(e){if(0===e)return"1";var t=e.toExponential().split(/e\+?/),n=parseInt(t[1],10),r=0>e,o=r?"0":"2",i=(r?-n:n)-l,a=p.padLeft(i.toString(),"0",d);o+=h+a;var s=Math.abs(parseFloat(t[0]));r&&(s=10-s);var u=s.toFixed(20);return u=u.replace(/\.?0+$/,""),o+=h+u}var l=-324,d=3,h="",p=e(14);n.collate=function(e,t){if(e===t)return 0;e=n.normalizeKey(e),t=n.normalizeKey(t);var r=c(e),o=c(t);if(r-o!==0)return r-o;if(null===e)return 0;switch(typeof e){case"number":return e-t;case"boolean":return e===t?0:t>e?-1:1;case"string":return s(e,t)}return Array.isArray(e)?a(e,t):u(e,t)},n.normalizeKey=function(e){switch(typeof e){case"undefined":return null;case"number":return e===1/0||e===-(1/0)||isNaN(e)?null:e;case"object":var t=e;if(Array.isArray(e)){var r=e.length;e=new Array(r);for(var o=0;r>o;o++)e[o]=n.normalizeKey(t[o])}else{if(e instanceof Date)return e.toJSON();if(null!==e){e={};for(var i in t)if(t.hasOwnProperty(i)){var a=t[i];"undefined"!=typeof a&&(e[i]=n.normalizeKey(a))}}}}return e},n.toIndexableString=function(e){var t="\x00";return e=n.normalizeKey(e),c(e)+h+r(e)+t},n.parseIndexableString=function(e){for(var t=[],n=[],r=0;;){var a=e[r++];if("\x00"!==a)switch(a){case"1":t.push(null);break;case"2":t.push("1"===e[r]),r++;break;case"3":var s=o(e,r);t.push(s.num),r+=s.length;break;case"4":for(var u="";;){var c=e[r];if("\x00"===c)break;u+=c,r++}u=u.replace(/\u0001\u0001/g,"\x00").replace(/\u0001\u0002/g,"").replace(/\u0002\u0002/g,""),t.push(u);break;case"5":var f={element:[],index:t.length};t.push(f.element),n.push(f);break;case"6":var l={element:{},index:t.length};t.push(l.element),n.push(l);break;default:throw new Error("bad collationIndex or unexpectedly reached end of input: "+a)}else{if(1===t.length)return t.pop();i(t,n)}}}},{14:14}],14:[function(e,t,n){"use strict";function r(e,t,n){for(var r="",o=n-e.length;r.length<o;)r+=t;return r}n.padLeft=function(e,t,n){var o=r(e,t,n);return o+e},n.padRight=function(e,t,n){var o=r(e,t,n);return e+o},n.stringLexCompare=function(e,t){var n,r=e.length,o=t.length;for(n=0;r>n;n++){if(n===o)return 1;var i=e.charAt(n),a=t.charAt(n);if(i!==a)return a>i?-1:1}return o>r?-1:0},n.intToDecimalForm=function(e){var t=0>e,n="";do{var r=t?-Math.ceil(e%10):Math.floor(e%10);n=r+n,e=t?Math.ceil(e/10):Math.floor(e/10)}while(e);return t&&"0"!==n&&(n="-"+n),n}},{}],15:[function(e,t,n){"use strict";function r(){this.store={}}function o(e){if(this.store=new r,e&&Array.isArray(e))for(var t=0,n=e.length;n>t;t++)this.add(e[t])}n.Map=r,n.Set=o,r.prototype.mangle=function(e){if("string"!=typeof e)throw new TypeError("key must be a string but Got "+e);return"$"+e},r.prototype.unmangle=function(e){return e.substring(1)},r.prototype.get=function(e){var t=this.mangle(e);return t in this.store?this.store[t]:void 0},r.prototype.set=function(e,t){var n=this.mangle(e);return this.store[n]=t,!0},r.prototype.has=function(e){var t=this.mangle(e);return t in this.store},r.prototype["delete"]=function(e){var t=this.mangle(e);return t in this.store?(delete this.store[t],!0):!1},r.prototype.forEach=function(e){for(var t=Object.keys(this.store),n=0,r=t.length;r>n;n++){var o=t[n],i=this.store[o];o=this.unmangle(o),e(i,o)}},o.prototype.add=function(e){return this.store.set(e,!0)},o.prototype.has=function(e){return this.store.has(e)},o.prototype["delete"]=function(e){return this.store["delete"](e)}},{}],16:[function(e,t,n){(function(){var e={}.hasOwnProperty,n=[].slice;t.exports=function(t,r){var o,i,a,s;i=[],s=[];for(o in r)e.call(r,o)&&(a=r[o],"this"!==o&&(i.push(o),s.push(a)));return Function.apply(null,n.call(i).concat([t])).apply(r["this"],s)}}).call(this)},{}],17:[function(t,n,r){!function(t){if("object"==typeof r)n.exports=t();else if("function"==typeof e&&e.amd)e(t);else{var o;try{o=window}catch(i){o=self}o.SparkMD5=t()}}(function(e){"use strict";function t(e,t,n,r,o,i){return t=g(g(t,e),g(r,i)),g(t<<o|t>>>32-o,n)}function n(e,n,r,o,i,a,s){return t(n&r|~n&o,e,n,i,a,s)}function r(e,n,r,o,i,a,s){return t(n&o|r&~o,e,n,i,a,s)}function o(e,n,r,o,i,a,s){return t(n^r^o,e,n,i,a,s)}function i(e,n,r,o,i,a,s){return t(r^(n|~o),e,n,i,a,s)}function a(e,t){var a=e[0],s=e[1],u=e[2],c=e[3];a=n(a,s,u,c,t[0],7,-680876936),c=n(c,a,s,u,t[1],12,-389564586),u=n(u,c,a,s,t[2],17,606105819),s=n(s,u,c,a,t[3],22,-1044525330),a=n(a,s,u,c,t[4],7,-176418897),c=n(c,a,s,u,t[5],12,1200080426),u=n(u,c,a,s,t[6],17,-1473231341),s=n(s,u,c,a,t[7],22,-45705983),a=n(a,s,u,c,t[8],7,1770035416),c=n(c,a,s,u,t[9],12,-1958414417),u=n(u,c,a,s,t[10],17,-42063),s=n(s,u,c,a,t[11],22,-1990404162),a=n(a,s,u,c,t[12],7,1804603682),c=n(c,a,s,u,t[13],12,-40341101),u=n(u,c,a,s,t[14],17,-1502002290),s=n(s,u,c,a,t[15],22,1236535329),a=r(a,s,u,c,t[1],5,-165796510),c=r(c,a,s,u,t[6],9,-1069501632),u=r(u,c,a,s,t[11],14,643717713),s=r(s,u,c,a,t[0],20,-373897302),a=r(a,s,u,c,t[5],5,-701558691),c=r(c,a,s,u,t[10],9,38016083),u=r(u,c,a,s,t[15],14,-660478335),s=r(s,u,c,a,t[4],20,-405537848),a=r(a,s,u,c,t[9],5,568446438),c=r(c,a,s,u,t[14],9,-1019803690),u=r(u,c,a,s,t[3],14,-187363961),s=r(s,u,c,a,t[8],20,1163531501),a=r(a,s,u,c,t[13],5,-1444681467),c=r(c,a,s,u,t[2],9,-51403784),u=r(u,c,a,s,t[7],14,1735328473),s=r(s,u,c,a,t[12],20,-1926607734),a=o(a,s,u,c,t[5],4,-378558),c=o(c,a,s,u,t[8],11,-2022574463),u=o(u,c,a,s,t[11],16,1839030562),s=o(s,u,c,a,t[14],23,-35309556),a=o(a,s,u,c,t[1],4,-1530992060),c=o(c,a,s,u,t[4],11,1272893353),u=o(u,c,a,s,t[7],16,-155497632),s=o(s,u,c,a,t[10],23,-1094730640),a=o(a,s,u,c,t[13],4,681279174),c=o(c,a,s,u,t[0],11,-358537222),u=o(u,c,a,s,t[3],16,-722521979),s=o(s,u,c,a,t[6],23,76029189),a=o(a,s,u,c,t[9],4,-640364487),c=o(c,a,s,u,t[12],11,-421815835),u=o(u,c,a,s,t[15],16,530742520),s=o(s,u,c,a,t[2],23,-995338651),a=i(a,s,u,c,t[0],6,-198630844),c=i(c,a,s,u,t[7],10,1126891415),u=i(u,c,a,s,t[14],15,-1416354905),s=i(s,u,c,a,t[5],21,-57434055),a=i(a,s,u,c,t[12],6,1700485571),c=i(c,a,s,u,t[3],10,-1894986606),u=i(u,c,a,s,t[10],15,-1051523),s=i(s,u,c,a,t[1],21,-2054922799),a=i(a,s,u,c,t[8],6,1873313359),c=i(c,a,s,u,t[15],10,-30611744),u=i(u,c,a,s,t[6],15,-1560198380),s=i(s,u,c,a,t[13],21,1309151649),a=i(a,s,u,c,t[4],6,-145523070),c=i(c,a,s,u,t[11],10,-1120210379),u=i(u,c,a,s,t[2],15,718787259),s=i(s,u,c,a,t[9],21,-343485551),e[0]=g(a,e[0]),e[1]=g(s,e[1]),e[2]=g(u,e[2]),e[3]=g(c,e[3])}function s(e){var t,n=[];for(t=0;64>t;t+=4)n[t>>2]=e.charCodeAt(t)+(e.charCodeAt(t+1)<<8)+(e.charCodeAt(t+2)<<16)+(e.charCodeAt(t+3)<<24);return n}function u(e){var t,n=[];for(t=0;64>t;t+=4)n[t>>2]=e[t]+(e[t+1]<<8)+(e[t+2]<<16)+(e[t+3]<<24);return n}function c(e){var t,n,r,o,i,u,c=e.length,f=[1732584193,-271733879,-1732584194,271733878];for(t=64;c>=t;t+=64)a(f,s(e.substring(t-64,t)));for(e=e.substring(t-64),n=e.length,r=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],t=0;n>t;t+=1)r[t>>2]|=e.charCodeAt(t)<<(t%4<<3);if(r[t>>2]|=128<<(t%4<<3),t>55)for(a(f,r),t=0;16>t;t+=1)r[t]=0;return o=8*c,o=o.toString(16).match(/(.*?)(.{0,8})$/),i=parseInt(o[2],16),u=parseInt(o[1],16)||0,r[14]=i,r[15]=u,a(f,r),f}function f(e){var t,n,r,o,i,s,c=e.length,f=[1732584193,-271733879,-1732584194,271733878];for(t=64;c>=t;t+=64)a(f,u(e.subarray(t-64,t)));for(e=c>t-64?e.subarray(t-64):new Uint8Array(0),n=e.length,r=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],t=0;n>t;t+=1)r[t>>2]|=e[t]<<(t%4<<3);if(r[t>>2]|=128<<(t%4<<3),t>55)for(a(f,r),t=0;16>t;t+=1)r[t]=0;return o=8*c,o=o.toString(16).match(/(.*?)(.{0,8})$/),i=parseInt(o[2],16),s=parseInt(o[1],16)||0,r[14]=i,r[15]=s,a(f,r),f}function l(e){var t,n="";for(t=0;4>t;t+=1)n+=b[e>>8*t+4&15]+b[e>>8*t&15];return n}function d(e){var t;for(t=0;t<e.length;t+=1)e[t]=l(e[t]);return e.join("")}function h(e){return/[\u0080-\uFFFF]/.test(e)&&(e=unescape(encodeURIComponent(e))),e}function p(e,t){var n,r=e.length,o=new ArrayBuffer(r),i=new Uint8Array(o);for(n=0;r>n;n+=1)i[n]=e.charCodeAt(n);return t?i:o}function v(e){return String.fromCharCode.apply(null,new Uint8Array(e))}function y(e,t,n){var r=new Uint8Array(e.byteLength+t.byteLength);return r.set(new Uint8Array(e)),r.set(new Uint8Array(t),e.byteLength),n?r:r.buffer}function _(e){var t,n=[],r=e.length;for(t=0;r-1>t;t+=2)n.push(parseInt(e.substr(t,2),16));return String.fromCharCode.apply(String,n)}function m(){this.reset()}var g=function(e,t){return e+t&4294967295},b=["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];return"5d41402abc4b2a76b9719d911017c592"!==d(c("hello"))&&(g=function(e,t){var n=(65535&e)+(65535&t),r=(e>>16)+(t>>16)+(n>>16);return r<<16|65535&n}),"undefined"==typeof ArrayBuffer||ArrayBuffer.prototype.slice||!function(){function t(e,t){return e=0|e||0,0>e?Math.max(e+t,0):Math.min(e,t)}ArrayBuffer.prototype.slice=function(n,r){var o,i,a,s,u=this.byteLength,c=t(n,u),f=u;return r!==e&&(f=t(r,u)),c>f?new ArrayBuffer(0):(o=f-c,i=new ArrayBuffer(o),a=new Uint8Array(i),s=new Uint8Array(this,c,o),a.set(s),i)}}(),m.prototype.append=function(e){return this.appendBinary(h(e)),this},m.prototype.appendBinary=function(e){this._buff+=e,this._length+=e.length;var t,n=this._buff.length;for(t=64;n>=t;t+=64)a(this._hash,s(this._buff.substring(t-64,t)));return this._buff=this._buff.substring(t-64),this},m.prototype.end=function(e){var t,n,r=this._buff,o=r.length,i=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];for(t=0;o>t;t+=1)i[t>>2]|=r.charCodeAt(t)<<(t%4<<3);return this._finish(i,o),n=d(this._hash),e&&(n=_(n)),this.reset(),n},m.prototype.reset=function(){return this._buff="",this._length=0,this._hash=[1732584193,-271733879,-1732584194,271733878],this},m.prototype.getState=function(){return{buff:this._buff,length:this._length,hash:this._hash}},m.prototype.setState=function(e){return this._buff=e.buff,this._length=e.length,this._hash=e.hash,this},m.prototype.destroy=function(){delete this._hash,delete this._buff,delete this._length},m.prototype._finish=function(e,t){var n,r,o,i=t;if(e[i>>2]|=128<<(i%4<<3),i>55)for(a(this._hash,e),i=0;16>i;i+=1)e[i]=0;n=8*this._length,n=n.toString(16).match(/(.*?)(.{0,8})$/),r=parseInt(n[2],16),o=parseInt(n[1],16)||0,e[14]=r,e[15]=o,a(this._hash,e)},m.hash=function(e,t){return m.hashBinary(h(e),t)},m.hashBinary=function(e,t){var n=c(e),r=d(n);return t?_(r):r},m.ArrayBuffer=function(){this.reset()},m.ArrayBuffer.prototype.append=function(e){var t,n=y(this._buff.buffer,e,!0),r=n.length;for(this._length+=e.byteLength,t=64;r>=t;t+=64)a(this._hash,u(n.subarray(t-64,t)));return this._buff=r>t-64?new Uint8Array(n.buffer.slice(t-64)):new Uint8Array(0),this},m.ArrayBuffer.prototype.end=function(e){var t,n,r=this._buff,o=r.length,i=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];for(t=0;o>t;t+=1)i[t>>2]|=r[t]<<(t%4<<3);return this._finish(i,o),n=d(this._hash),e&&(n=_(n)),this.reset(),n},m.ArrayBuffer.prototype.reset=function(){return this._buff=new Uint8Array(0),this._length=0,this._hash=[1732584193,-271733879,-1732584194,271733878],this},m.ArrayBuffer.prototype.getState=function(){var e=m.prototype.getState.call(this);return e.buff=v(e.buff),e},m.ArrayBuffer.prototype.setState=function(e){return e.buff=p(e.buff,!0),m.prototype.setState.call(this,e)},m.ArrayBuffer.prototype.destroy=m.prototype.destroy,m.ArrayBuffer.prototype._finish=m.prototype._finish,m.ArrayBuffer.hash=function(e,t){var n=f(new Uint8Array(e)),r=d(n);return t?_(r):r},m})},{}],18:[function(e,t,n){"use strict";function r(e,t,n){var r=n[n.length-1];e===r.element&&(n.pop(),r=n[n.length-1]);var o=r.element,i=r.index;if(Array.isArray(o))o.push(e);else if(i===t.length-2){var a=t.pop();o[a]=e}else t.push(e)}n.stringify=function(e){var t=[];t.push({obj:e});for(var n,r,o,i,a,s,u,c,f,l,d,h="";n=t.pop();)if(r=n.obj,o=n.prefix||"",i=n.val||"",h+=o,i)h+=i;else if("object"!=typeof r)h+="undefined"==typeof r?null:JSON.stringify(r);else if(null===r)h+="null";else if(Array.isArray(r)){for(t.push({val:"]"}),a=r.length-1;a>=0;a--)s=0===a?"":",",t.push({obj:r[a],prefix:s});t.push({val:"["})}else{u=[];for(c in r)r.hasOwnProperty(c)&&u.push(c);for(t.push({val:"}"}),a=u.length-1;a>=0;a--)f=u[a],l=r[f],d=a>0?",":"",d+=JSON.stringify(f)+":",t.push({obj:l,prefix:d});t.push({val:"{"})}return h},n.parse=function(e){for(var t,n,o,i,a,s,u,c,f,l=[],d=[],h=0;;)if(t=e[h++],"}"!==t&&"]"!==t&&"undefined"!=typeof t)switch(t){case" ":case"	":case"\n":case":":case",":break;case"n":h+=3,r(null,l,d);break;case"t":h+=3,r(!0,l,d);break;case"f":h+=4,r(!1,l,d);break;case"0":case"1":case"2":case"3":case"4":case"5":case"6":case"7":case"8":case"9":case"-":for(n="",h--;;){if(o=e[h++],!/[\d\.\-e\+]/.test(o)){h--;break}n+=o}r(parseFloat(n),l,d);break;case'"':for(i="",a=void 0,s=0;;){if(u=e[h++],'"'===u&&("\\"!==a||s%2!==1))break;i+=u,a=u,"\\"===a?s++:s=0}r(JSON.parse('"'+i+'"'),l,d);break;case"[":c={element:[],index:l.length},l.push(c.element),d.push(c);break;case"{":f={element:{},index:l.length},l.push(f.element),d.push(f);break;default:throw new Error("unexpectedly reached end of input: "+t)}else{if(1===l.length)return l.pop();r(l.pop(),l,d)}}},{}]},{},[3])(3)});
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	/* INITIAL VALUE */
+	//Initial data declaration
+	module.exports = {
+	  INITIAL_LOCATION_DATA : [{
+	      title: '阿佐ヶ谷駅',
+	      position: {
+	          lat: 35.704872,
+	          lng: 139.63585899999998
+	      },
+	      imgUrl: 'https://lh4.googleusercontent.com/-qSlKaZvHebQ/V4zlTsr9c1I/AAAAAAACKZo/UJ8hDXIwcjwscIOqEWSNBMBP2_khJ_glACLIB/w1100-h100-k/',
+	      address: '日本, 〒166-0004 東京都杉並区阿佐谷南３丁目５８'
+	  }, {
+	      title: '高円寺駅',
+	      position: {
+	          lat: 35.7052366,
+	          lng: 139.64966200000003
+	      },
+	      imgUrl: 'https://lh5.googleusercontent.com/-10yIPR5YrF4/VzbKSgsx2BI/AAAAAAABoOs/jvwhx7GkRbwIa0DVfgsbUQQkV3KwwnAcgCLIB/w1100-h100-k/',
+	      address: '日本, 〒166-0003 東京都杉並区高円寺南４丁目４８'
+	  }, {
+	      title: '大森駅',
+	      position: {
+	          lat: 35.5884467,
+	          lng: 139.72786829999995
+	      },
+	      imgUrl: 'https://lh4.googleusercontent.com/-x52fiD5jgRg/V2382yj06cI/AAAAAAAJcEE/UFywvGiWj0w7tbql_CFn3tblRHx9aEH3wCLIB/w1100-h100-k/',
+	      address: '日本, 〒143-0016 東京都大田区大森北１丁目２９−１１'
+	  }, {
+	      title: '武蔵小金井駅',
+	      position: {
+	          lat: 35.7010622,
+	          lng: 139.50674030000005
+	      },
+	      imgUrl: 'https://lh3.googleusercontent.com/-dpD-iGgT2KY/V5N38aYK13I/AAAAAAAAAHg/FPSnN7UzXwsSbOR7e6ZzieWwjiyzuKzqwCLIB/w1100-h100-k/',
+	      address: '日本, 〒184-0004 東京都小金井市本町６丁目１４'
+	  }, {
+	      title: '東部練馬駅',
+	      position: {
+	          lat: 35.768671,
+	          lng: 139.66238199999998
+	      },
+	      imgUrl: 'https://lh6.googleusercontent.com/-OWfxEG2DfnU/V2tu-E5VukI/AAAAAAAAOqg/S_W1pXjtiG0fyiCVq29FlWHsr1idRgezQCLIB/w1100-h100-k/',
+	      address: '日本, 〒175-0083 東京都板橋区徳丸２丁目２'
+	  },
+	  ],
+
+	    //goole map style object declaration
+	  STYLES : [{
+	          featureType: 'water',
+	          stylers: [{
+	              color: '#19a0d8'
+	          }]
+	      }, {
+	          featureType: 'administrative',
+	          elementType: 'labels.text.stroke',
+	          stylers: [{
+	              color: '#ffffff'
+	          }, {
+	              weight: 6
+	          }]
+	      }, {
+	          featureType: 'administrative',
+	          elementType: 'labels.text.fill',
+	          stylers: [{
+	              color: '#e85113'
+	          }]
+	      }, {
+	          featureType: 'road.highway',
+	          elementType: 'geometry.stroke',
+	          stylers: [{
+	              color: '#efe9e4'
+	          }, {
+	              lightness: -40
+	          }]
+	      }, {
+	          featureType: 'transit.station',
+	          stylers: [{
+	              weight: 9
+	          }, {
+	              hue: '#e85113'
+	          }]
+	      }, {
+	          featureType: 'road.highway',
+	          elementType: 'labels.icon',
+	          stylers: [{
+	              visibility: 'off'
+	          }]
+	      }, {
+	          featureType: 'water',
+	          elementType: 'labels.text.stroke',
+	          stylers: [{
+	              lightness: 100
+	          }]
+	      }, {
+	          featureType: 'water',
+	          elementType: 'labels.text.fill',
+	          stylers: [{
+	              lightness: -100
+	          }]
+	      }, {
+	          featureType: 'poi',
+	          elementType: 'geometry',
+	          stylers: [{
+	              visibility: 'on'
+	          }, {
+	              color: '#f0e4d3'
+	          }]
+	      }, {
+	          featureType: 'road.highway',
+	          elementType: 'geometry.fill',
+	          stylers: [{
+	              color: '#efe9e4'
+	          }, {
+	              lightness: -25
+	          }]
+	      }
+	  ]
+	};
+
 
 /***/ }
 /******/ ]);
