@@ -1,8 +1,12 @@
 // webpack.config.js
 module.exports = {
-  entry: './src/js/script.js',
+  entry: {index : './src/js/index.js'},
   output: {
-    filename: './src/js/bundle.js'
+    filename: './dst/js/[name].js'
   },
-  loaders: [  ]
+  // module:{
+  //   loaders: [
+  //     { test: './src/css/cssstyle.css', loader: "style!css" },
+  //   ]
+  // }
 };

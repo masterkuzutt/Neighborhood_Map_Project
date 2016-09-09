@@ -4,7 +4,7 @@ This project is for Frontend developer naanodegree by using google maps api ,wik
 ## How To Use
 ### installation
 * download or clone repository
-* open src/index.html on your browser
+* open dst/index.html on your browser
 
 ### add location
 * input word related to location you want to add  in textbox on google map.
