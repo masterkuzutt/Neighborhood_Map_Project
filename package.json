@@ -1,0 +1,26 @@
+{
+  "name": "neighborhood_map_project",
+  "version": "1.0.0",
+  "description": "This project is for Frontend developer naanodegree by using google maps api ,wikipedia web and knockout.js , implement web app that show list of location and icon on the map.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masterkuzutt/Neighborhood_Map_Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/masterkuzutt/Neighborhood_Map_Project/issues"
+  },
+  "homepage": "https://github.com/masterkuzutt/Neighborhood_Map_Project#readme",
+  "devDependencies": {
+    "browser-sync": "^2.15.0",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.3.2",
+    "gulp-webpack": "^1.5.0",
+    "webpack-stream": "^3.2.0"
+  }
+}

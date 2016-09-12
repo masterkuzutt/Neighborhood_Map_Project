@@ -1,12 +1,16 @@
-// webpack.config.js
-module.exports = {
-  entry: {index : './src/js/index.js'},
-  output: {
-    filename: './dst/js/[name].js'
-  },
-  // module:{
-  //   loaders: [
-  //     { test: './src/css/cssstyle.css', loader: "style!css" },
-  //   ]
-  // }
+'use strict';
+var path = require('path');
+// var webpack = require('webpack');
+var env = process.env.NODE_ENV;
+
+let config = {
+    entry: {
+        index :'./app/js/index.js'
+    },
+    output: {
+        // path: './app/js/',
+        filename: '[name].bundle.js'
+    }
 };
+
+module.exports = config;
