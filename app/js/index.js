@@ -76,11 +76,6 @@ var ViewModel = function() {
 
     // init filter
     this.query = ko.observable(""); /// for trigger search
-    this.search = function  () {
-      for (var i = 0, len = self.locationData().length; i < len; i++) {
-        self.filter(self.locationData()[i],$('#filter-textbox').val());
-      }
-    };
 
     // init icon for marker
     this.defaultIcon = createMarkerIcon('66d9ff');
@@ -137,7 +132,7 @@ var ViewModel = function() {
         this.createLocation((config.INITIAL_LOCATION_DATA[i]));
       }
       self.map.fitBounds(self.bounds);
-      self.query.subscribe(self.search);
+      self.query.subscribe(self.applyFileter);
     };
 
     /**
@@ -214,30 +209,28 @@ var ViewModel = function() {
      * @description set  all marker and list  to visible
      */
     this.clearFilter = function() {
-        for (var i = 0, len = self.locationData().length; i < len; i++) {
-            self.locationData()[i].marker.setMap(self.map);
-            self.bounds.extend(self.locationData()[i].latLng);
-            self.locationData()[i].visibility(true);
-        }
+        // for (var i = 0, len = self.locationData().length; i < len; i++) {
+        //     self.locationData()[i].marker.setMap(self.map);
+        //     self.bounds.extend(self.locationData()[i].latLng);
+        //     self.locationData()[i].visibility(true);
+        // }
+        self.locationData().map(function (elm) {
+          elm.marker.setMap(self.map);
+          elm.visibility(true);
+          self.bounds.extend(elm.latLng);
+        });
         self.map.fitBounds(self.bounds);
     };
 
-    /**
-     * @description hide location from map and list if inputText doesn't match
-     */
-    this.applyFileter = function() {
-        var inputText = $('#filter-textbox').val();
-        for (var i = 0, len = self.locationData().length; i < len; i++) {
-          self.filter(self.locationData()[i],inputText);
-        }
-    };
 
     /*
-     * @description sett visiblity true if inputText macth location title
+     * @description set visiblity true if inputText macth location title
      * @param {object} location object
      * @param {string} text
      */
-    this.filter = function (location,inputText) {
+    this.filter = function (inputText) {
+
+      return function (location) {
         if (location.title.match(inputText)) {
             location.marker.setMap(self.map);
             location.visibility(true);
@@ -245,8 +238,16 @@ var ViewModel = function() {
             location.marker.setMap(null);
             location.visibility(false);
         }
+      }
     };
 
+    /**
+     * @description hide location from map and list if inputText doesn't match
+     */
+    this.applyFileter = function() {
+        var fn = self.filter($('#filter-textbox').val());
+        self.locationData().map(function (elm) {fn(elm);});
+    };
 
     /**
      * @description set InfoWIndow object and open it. this function is expected to attach click event of google.maps.marker
