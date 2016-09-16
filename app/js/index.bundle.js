@@ -162,8 +162,8 @@
 	     */
 	    this.init = function() {
 	      //init  location data
-	      config.INITIAL_LOCATION_DATA.map( function (location) {
-	        self.createLocation(location);
+	      config.INITIAL_LOCATION_DATA.map( function (locationData) {
+	        self.createLocation(locationData);
 	      });
 
 	      self.map.fitBounds(self.bounds);
@@ -176,9 +176,9 @@
 	     *create location and push it to locationData ovservable array.this function construct location data from Location class
 	     * @param  {object} this data should be same as Location class
 	     */
-	    this.createLocation = function(data) {
+	    this.createLocation = function(locationData) {
 
-	        var location = new Location(data);
+	        var location = new Location(locationData);
 
 	        location.marker.setMap(self.map);
 	        location.marker.setIcon(self.defaultIcon);
@@ -278,8 +278,8 @@
 	     * @description hide location from map and list if inputText doesn't match
 	     */
 	    this.applyFileter = function() {
-	        var fn = self.filter($('#filter-textbox').val());
-	        self.locationData().map(function (elm) {fn(elm);});
+	        var searchText = $('#filter-textbox').val();
+	        self.locationData().map( self.filter(searchText));
 	    };
 
 	    /**
