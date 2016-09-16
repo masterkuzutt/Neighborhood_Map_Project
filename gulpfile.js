@@ -25,9 +25,16 @@ gulp.task('browserSync', function() {
 gulp.task('webpack', function () {
     return gulp.src('./app/js/index.js')
         .pipe(webpack(webpack_config))
-        .pipe(gulp.dest('app/js/'));
+        .pipe(gulp.dest('app/js/'))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
 });
 
 gulp.task('watch', ['browserSync','sass','webpack'],function(){
-  gulp.watch('app/scss/**/*.scss', ['sass']);
+  gulp.watch(['app/scss/**/*.scss',
+              'app/js/index.js'],
+            ['sass',
+             'webpack']
+  );
 });

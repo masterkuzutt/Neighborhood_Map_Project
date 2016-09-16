@@ -1,9 +1,6 @@
-var $ = require ("./libs/jquery.min.js"),
-    jQuery = $,
+var jQuery = $ = require ("./libs/jquery.min.js"),
     ko = require ("./libs/knockout-3.2.0.js"),
     config = require("./app.config.js")
-
-// require ("./libs/pouchdb-5.4.5.min.js");
 
 
 /**
@@ -36,7 +33,6 @@ var Location = function(data) {
     this.lng = data.position.lng;
     this.position = data.position;
     this.address = ko.observable(data.address);
-    this.imgUrl = data.imgUrl || "";
     this.message = "";
     this.discription = "";
     this.visibility = ko.observable(true);
@@ -102,14 +98,6 @@ var ViewModel = function() {
                 lat: place[0].geometry.location.lat(),
                 lng: place[0].geometry.location.lng()
             };
-            if (place[0].photos) {
-                data.imgUrl = place[0].photos[0].getUrl({
-                    'maxWidth': 1100,
-                    'maxHeight': 100
-                });
-            } else {
-                data.imgUrl = "no-image";
-            }
 
             data.address = place[0].formatted_address;
             self.createLocation(data);
@@ -128,12 +116,14 @@ var ViewModel = function() {
      */
     this.init = function() {
       //init  location data
-      for (var i = 0, len = config.INITIAL_LOCATION_DATA.length; i < len; i++) {
-        this.createLocation((config.INITIAL_LOCATION_DATA[i]));
-      }
+      config.INITIAL_LOCATION_DATA.map( function (location) {
+        self.createLocation(location);
+      });
+
       self.map.fitBounds(self.bounds);
       self.query.subscribe(self.applyFileter);
     };
+
 
     /**
      * @description
@@ -165,34 +155,36 @@ var ViewModel = function() {
     this.setDiscription = function(location) {
 
         location.discription = "<p>tring to get data from wikipedia. reopen later</p>";
+        var discTemplate ='<li class="test"><a href=%href% target="_blank">%text%</a></li>',
+            errTemplate ='<p class="msg">Failed to load wikipediaa link due to %msg%. delete location and try later</p>';
+
         var wikirequestTimeout = setTimeout(function() {
             location.discription = "<p>failed to get wikipedia search</p>";
         }, 8000);
 
         var wikipediaUrl = 'https://jp.wikipedia.org/w/api.php?format=json&action=opensearch&search=' + location.title;
         $.ajax({
-                method: "GET",
-                url: wikipediaUrl,
-                dataType: "jsonp"
-            })
-            .done(function(data) {
-                location.discription = "";
-                if (data[1].length > 0) {
-                    for (var i = 0, len = data[1].length; i < len; i++) {
-                        location.discription = location.discription + '<li class="test">' +
-                            '<a href=' + data[3][i] + ' target="_blank">' + data[1][i] + '</a></li>';
-                    }
-                } else {
-                    location.discription = "No related articles found in wikipedia";
-                }
-                clearTimeout(wikirequestTimeout);
-            })
-            .error(function(data) {
-                location.discription = '<p class="msg">Failed to load wikipediaa link due to' +
-                    data +
-                    ' delete location and try later</p>';
-                clearTimeout(wikirequestTimeout);
-            });
+          method: "GET",
+          url: wikipediaUrl,
+          dataType: "jsonp"
+        })
+        .done( function(data) {
+          location.discription = "";
+          if (data[1].length > 0) {
+            var i = 0, len = data[1].length;
+            for (; i < len; i++) {
+              location.discription += discTemplate.replace('%href%',data[3][i])
+                                         .replace('%text%',data[1][i]);
+            }
+          } else {
+              location.discription = "No related articles found in wikipedia";
+          }
+          clearTimeout(wikirequestTimeout);
+        })
+        .error(function(data) {
+            location.discription = errTemplate.replace('%msg%',data);
+            clearTimeout(wikirequestTimeout);
+        });
     };
 
     /**
@@ -209,12 +201,7 @@ var ViewModel = function() {
      * @description set  all marker and list  to visible
      */
     this.clearFilter = function() {
-        // for (var i = 0, len = self.locationData().length; i < len; i++) {
-        //     self.locationData()[i].marker.setMap(self.map);
-        //     self.bounds.extend(self.locationData()[i].latLng);
-        //     self.locationData()[i].visibility(true);
-        // }
-        self.locationData().map(function (elm) {
+        self.locationData().map( function (elm) {
           elm.marker.setMap(self.map);
           elm.visibility(true);
           self.bounds.extend(elm.latLng);
@@ -256,7 +243,6 @@ var ViewModel = function() {
     this.setInfoWindow = function(location) {
 
         if (self.infoWindow.marker !== location.marker) {
-
             // set infowindow marker
             self.infoWindow.marker = location.marker;
 
