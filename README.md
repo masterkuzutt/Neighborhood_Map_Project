@@ -4,6 +4,9 @@ This project is for Frontend developer naanodegree by using google maps api ,wik
 ## How To Use
 ### installation
 * download or clone repository
+* open app/index.html on your editer
+* input apropreate api key below line 
+`<script src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry,places&key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3"></script>
 * open dst/index.html on your browser
 
 ### add location
