@@ -1,40 +1,16 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var browserSync = require('browser-sync');
-var webpack = require('webpack-stream');
-// var webpack = require('webpack');
-var webpack_config = require('./webpack.config.js');
+const gulp = require('gulp');
+const webpackStream = require("webpack-stream");
+const webpack = require("webpack");
 
-gulp.task('sass', function(){
-  return gulp.src('app/scss/**/*.scss')
-    .pipe(sass()) // Using gulp-sass
-    .pipe(gulp.dest('app/css'))
-    .pipe(browserSync.reload({
-      stream: true
-    }));
-});
+const webpackConfig = require('./webpack.config');
 
-gulp.task('browserSync', function() {
-  browserSync.init({
-    server: {
-      baseDir: 'app'
-    },
-  })
-});
+gulp.task('default', () => {
+    // dest should be the same with webpack setings
+    return webpackStream(webpackConfig, webpack).pipe(gulp.dest("app/js"));
+})
 
-gulp.task('webpack', function () {
-    return gulp.src('./app/js/index.js')
-        .pipe(webpack(webpack_config))
-        .pipe(gulp.dest('app/js/'))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
-});
+gulp.watch('./app/js/*.js|./app/css/*.css', { ignored: './app/js/index.bundle.js' }).on('change', gulp.series('default'));
 
-gulp.task('watch', ['browserSync','sass','webpack'],function(){
-  gulp.watch(['app/scss/**/*.scss',
-              'app/js/index.js'],
-            ['sass',
-             'webpack']
-  );
-});
+
+
+

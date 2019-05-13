@@ -3,51 +3,76 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>Neighborhood Map</title>
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
-    <script src="https://use.fontawesome.com/d48299b3b3.js"></script>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div class="header-container">
-        <i data-bind="click : changeSidebar" class="slidebar-btn fa fa-bars" aria-hidden="true"></i>
-        <h1 class="site-title">Neighborhood Map</h1>
-    </div>
-    <div class="main-container">
-        <div class="sidebar-container">
-            <div>
-                <div class="filter-container">
-                    <input type="search" data-bind="value:query ,valueupdate:'keyup' " name="filer-textbox" id="filter-textbox" placeholder="location name">
-                    <input data-bind="click : applyFileter" type="button" class="apply-filter-btn btn" value="&#xf0b0;">
-                    <input data-bind="click : clearFilter" type="button" class="clear-fileter-btn btn" value="&#xf0e2;">
-                </div>
-                <div class="list-container">
-                    <ul class="location-list" data-bind="template: { name: 'location' ,foreach :locationData}"></ul>
-                      <script type="text/html" id="location">
-                        <li class="list-item" data-bind="visible: visibility">
-                            <div class="location-row">
-                                <h3 class="location-title" data-bind="click : $parent.setInfoWindow,text : title"></h3>
-                                <input data-bind="click : $parent.deleteLocation" type="button" class="delete-btn btn" value="&#xf00d;">
-                            </div>
-                        </li>
-                      </script>
+    <header>
+        <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
+            <button type="button" class="btn" data-toggle="collapse" data-target="#sidebar" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars text-light"></i>
+            </button>
+            <a class="navbar-brand mr-auto" href="#">Neighborhood Map</a>
+            <!-- knockout things here  -->
+            <div class="form-inline">
+                <!-- [TODO] click cross icon refresh markers -->
+                <input id="pac-input" class="form-control mr-sm-2" type="search" placeholder="Search"
+                    aria-label="Search" data-bind="event{search:searchKo,keypress:searchKo}, attr:{readonly:searchStatus}">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" data-bind="click:searchKo">
+                    <div id="search-btn-loading" class="spinner-border spinner-border-sm spinner-grow-sm" role="status" data-bind="visible: searchStatus">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div id="search-btn-text" data-bind="ifnot :searchStatus" >
+                        <i class="fa fa-search"></i>
+                    </div>
+                </button>
+            </div>
+            <!-- knockout things here  -->
+        </nav>
+
+        <nav id="sidebar" class="flex-column navbar-collapse bg-dark p-3" style="z-index:3000">
+            <!-- knockout things here  -->
+            <div class="input-group mb-2">
+                <input type="search" class="form-control"
+                    data-bind="value:query ,valueupdate:'keyup', event:{search : applyFilterKo} " name="filer-textbox"
+                    id="filter-textbox" placeholder="press enter to filter">
+            </div>
+
+            <div class="list-group" data-bind="foreach :locationDataArray">
+            <div class="list-group-item p-1 pl-2" data-bind="visible:visibility">
+                <div class="d-flex align-items-center justify-content-between">
+
+                    <div class="" data-bind="click : $parent.setInfoWindowKo,text:title">
+                    </div>
+
+                    <div class="">
+                        <button type="button" class="btn position-right " data-bind="click : $parent.deleteLocationKo">
+                            <i class="fas fa-times text-dark"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="map-container">
-            <input type="text" name="pac-input" id="pac-input">
-            <div id="map">
             </div>
+            <!-- knockout things here  -->
+        </nav>
+
+    </header>
+    <main>
+        <div>
+            <div id="map" class="position-absolute w-100 h-100"></div>
         </div>
-    </div>
-    <!-- <script src="js/libs/jquery.min.js"></script> -->
-    <!-- <script src="js/libs/knockout-3.2.0.js"></script> -->
-    <!-- <script src="js/libs/pouchdb-5.4.5.min.js"></script> -->
-    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry,places&key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3&callback=init" onerror="mapLoadError()"></script> -->
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry,places&key=AIzaSyB7PN2MCfC9FyBlvHEpOx3jZXzDUOITBJM&v=3"></script>
+    </main>
+    <footer>
+
+    </footer>
+    <!-- SCRIPTS -->
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol' async defer></script>
+
     <script src="js/index.bundle.js"></script>
 </body>
+
 
 </html>

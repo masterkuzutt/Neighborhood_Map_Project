@@ -4,7 +4,11 @@
   "description": "This project is for Frontend developer naanodegree by using google maps api ,wikipedia web and knockout.js , implement web app that show list of location and icon on the map.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "dev": "webpack --mode development",
+    "server": "npx gulp",
+    "jest": "jest"
   },
   "repository": {
     "type": "git",
@@ -17,10 +21,29 @@
   },
   "homepage": "https://github.com/masterkuzutt/Neighborhood_Map_Project#readme",
   "devDependencies": {
-    "browser-sync": "^2.15.0",
-    "gulp": "^3.9.1",
-    "gulp-sass": "^2.3.2",
-    "gulp-webpack": "^1.5.0",
-    "webpack-stream": "^3.2.0"
-  }
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.4.4",
+    "@fortawesome/fontawesome-free": "^5.8.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.18",
+    "@fortawesome/free-solid-svg-icons": "^5.8.2",
+    "babel-loader": "^8.0.5",
+    "babel-register": "^6.26.0",
+    "bootstrap": "^4.3.1",
+    "css-loader": "^2.1.1",
+    "dotenv": "^8.0.0",
+    "gulp": "^4.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.15.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.3.1",
+    "webpack-stream": "^5.2.1"
+  },
+  "dependencies": {}
 }

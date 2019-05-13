@@ -1,6 +1,11 @@
 /* INITIAL VALUE */
 //Initial data declaration
 module.exports = {
+  MAP_URL:'https://www.bing.com/maps',
+  CENTER :{
+      lat: 35.7052366,
+      lng: 139.64966200000003
+  },
   INITIAL_LOCATION_DATA : [{
       title: '阿佐ヶ谷駅',
       position: {
